@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+import environment
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,12 +22,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '&qa-@bru_yukf_&gjw@t473fn=fqga0u*c38kbjey!)by+)z-o'
+SECRET_KEY = environment.SECRET_KEY
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if environment.ENV == "DEV" else False
 
-ALLOWED_HOSTS = ["farooqhidayat.pythonanywhere.com"]
+ALLOWED_HOSTS = environment.ALLOWED_HOSTS
 
 
 # Application definition
@@ -108,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = environment.TIME_ZONE
 
 USE_I18N = True
 
