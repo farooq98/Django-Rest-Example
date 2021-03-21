@@ -4,8 +4,10 @@ It is a simple django rest project, it is available on http://farooqhidayat.pyth
 
 Only GET request /api/test -----> Response List of Objects <br/>
 Both GET and POST requests /api/test/create <br/>
-GET Response List of Objects <br/>
-POST Response Posted Object <br/>
+<ul>
+  <li>GET Response List of Objects <br/> </li>
+  <li>POST Response Posted Object <br/> <li>
+</ul>
 Send Email: POST request /api/test/sendemail -----> JSON Payload { "email": "email@email.com" } or { "email": ["email_1@email.com", "email_2@email.com"] } <br/>
 Response : { "send": true, "message": "success" } or { "sent": false, "message": "error message" }
 
