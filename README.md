@@ -33,3 +33,7 @@ ALLOWED_HOSTS = [] <br/>
 SECRET_KEY = "mysecretkey" <br/>
 
 TIME_ZONE = 'UTC' <br/>
+
+EMAIL = "your@email.com"
+
+PASSWORD = "yourpassword"
