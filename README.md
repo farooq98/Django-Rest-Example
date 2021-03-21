@@ -1,6 +1,6 @@
 # Django-Rest-Example
 
-It is a simple django rest project, it is available on http://farooqhidayat.pythonanywhere.com <br/>
+It is a simple django rest project, it is available on https://farooqhidayat.pythonanywhere.com <br/>
 
 Only GET request /api/test <br/>
 <ul>
