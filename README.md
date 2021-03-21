@@ -15,6 +15,6 @@ ENV = "DEV" <br/>
 
 ALLOWED_HOSTS = [] <br/>
 
-SECRET_KEY = "" <br/>
+SECRET_KEY = "mysecretkey" <br/>
 
 TIME_ZONE = 'Asia/Karachi' <br/>
