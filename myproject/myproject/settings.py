@@ -8,11 +8,23 @@ except ImportError:
     SECRET_KEY = "mysecretkey"
     ALLOWED_HOSTS = []
     TIME_ZONE = "UTC"
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_HOST_USER = "admin@myproject.com"
 else:
     DEBUG = True if environment.ENV == "DEV" else False
     SECRET_KEY = environment.SECRET_KEY
     ALLOWED_HOSTS = environment.ALLOWED_HOSTS
     TIME_ZONE = environment.TIME_ZONE
+    if DEBUG:
+        EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+        EMAIL_HOST_USER = "admin@myproject.com"
+    else:
+        EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+        EMAIL_HOST = 'smtp.google.com'
+        EMAIL_PORT = 587
+        EMAIL_HOST_USER = environment.EMAIL
+        EMAIL_HOST_PASSWORD = environment.PASSWORD
+        EMAIL_USE_TLS = True
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
