@@ -2,16 +2,16 @@
 
 It is a simple django rest project, it is available on https://farooqhidayat.pythonanywhere.com <br/>
 
-Only GET request /api/test <br/>
+Only GET request https://farooqhidayat.pythonanywhere.com/api/test <br/>
 <ul>
   <li>Response List of Objects (Paginated)</li>
 </ul>
-Both GET and POST requests /api/test/create <br/>
+Both GET and POST requests https://farooqhidayat.pythonanywhere.com/api/test/create <br/>
 <ul>
   <li>GET Response List of Objects (Non-Paginated) </li>
   <li>POST Response Posted Object</li>
 </ul>
-Send Email: POST request /api/test/sendemail <br/> 
+Send Email: POST request https://farooqhidayat.pythonanywhere.com/api/test/sendemail <br/> 
 JSON Payload: 
 <ul>
   <li>{ "email": "email@email.com" } OR</l1> 
