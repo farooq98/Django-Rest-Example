@@ -6,17 +6,17 @@ Only GET request /api/test -----> Response List of Objects <br/>
 Both GET and POST requests /api/test/create <br/>
 <ul>
   <li>GET Response List of Objects</li>
-  <li>POST Response Posted Object<li>
+  <li>POST Response Posted Object</li>
 </ul>
 Send Email: POST request /api/test/sendemail <br/> 
 JSON Payload: 
 <ul>
-  <li>{ "email": "email@email.com" }</l1> 
+  <li>{ "email": "email@email.com" } OR</l1> 
   <li>{ "email": ["email_1@email.com", "email_2@email.com"] } </li>
 </ul>
 Response: 
 <ul>
-  <li>{ "send": true, "message": "success" }</li> 
+  <li>{ "send": true, "message": "success" } OR</li> 
   <li>{ "sent": false, "message": "error message" } </li>
 </ul>
 
