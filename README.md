@@ -2,10 +2,13 @@
 
 It is a simple django rest project, it is available on http://farooqhidayat.pythonanywhere.com <br/>
 
-Only GET request /api/test -----> Response List of Objects <br/>
+Only GET request /api/test <br/>
+<ul>
+  <li>Response List of Objects (Paginated)</li>
+</ul>
 Both GET and POST requests /api/test/create <br/>
 <ul>
-  <li>GET Response List of Objects</li>
+  <li>GET Response List of Objects (Non-Paginated) </li>
   <li>POST Response Posted Object</li>
 </ul>
 Send Email: POST request /api/test/sendemail <br/> 
