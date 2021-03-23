@@ -1,9 +1,9 @@
 from django.core.mail import send_mail
 from django.conf import settings
 from email_validator import validate_email, EmailNotValidError
-from .models import TestModel
+from myapp.models import TestModel
 
-def email(emails):
+def test_email(emails):
     messages = "\n".join(
         [message['message'] for message in TestModel.objects.all() \
         .values('message')]
@@ -18,6 +18,22 @@ def email(emails):
     email_from = settings.EMAIL_HOST_USER
     validated_emails = email_validation(emails)
     
+    if isinstance(validated_emails, EmailNotValidError) or \
+       isinstance(validated_emails, ValueError):
+        raise Exception(str(validated_emails))
+    recipient_list = validated_emails
+    send_mail( subject, message, email_from, recipient_list )
+
+def send_verfication_email(email, code, purpose="email verification"):
+    if settings.DEBUG:
+        subject = f'{purpose.title()} From localhost'
+    else:
+        subject = f'{purpose} From {settings.ALLOWED_HOSTS[0]}'
+    
+    message = f'Your {purpose} code is {code}'
+    email_from = settings.EMAIL_HOST_USER
+    validated_emails = email_validation(emails)
+
     if isinstance(validated_emails, EmailNotValidError) or \
        isinstance(validated_emails, ValueError):
         raise Exception(str(validated_emails))

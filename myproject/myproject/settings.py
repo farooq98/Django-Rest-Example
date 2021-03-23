@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'user_registration',
     'rest_framework',
 ]
 
@@ -117,3 +118,5 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+AUTH_USER_MODEL = 'user_registration.UserModel'

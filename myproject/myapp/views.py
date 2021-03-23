@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView, ListCreateAPIView
 from rest_framework.pagination import PageNumberPagination
-from .send_email import email
+from core import test_email
 from .serializers import TestSerializer
 from .models import TestModel
 
@@ -30,7 +30,7 @@ class SendMessagesOnEmail(APIView):
     def post(self, request):
         emails = request.data.get("email")
         try:
-            email(emails)
+            test_email(emails)
             return Response({
                 "sent": True,
                 "message": "success"
