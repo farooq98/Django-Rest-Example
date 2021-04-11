@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from datetime import timedelta
 from core import generate_random_code, send_verfication_email
@@ -20,7 +20,7 @@ class MyCustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-class UserModel(AbstractBaseUser):
+class UserModel(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
     name = models.CharField(max_length=100, default='Anonymous')
@@ -58,15 +58,17 @@ class UserModel(AbstractBaseUser):
 
     def change_password(self):
         if self.is_active:
-            self.verification_code = self.generate_random_code()
+            self.verification_code = generate_random_code()
             send_verfication_email(self.email, self.verification_code, purpose="password reset")
             self.password_change_time = timezone.now() + timedelta(minutes=10)
+            self.save()
 
-    def verify_email(self):
+    def send_email(self):
         if not self.is_active:
-            self.verification_code = self.generate_random_code()
+            self.verification_code = generate_random_code()
             send_verfication_email(self.email, self.verification_code)
             self.email_verification_time = timezone.now() + timedelta(minutes=10)
+            self.save()
 
     def save(self, *args, **kwargs):
         if not self.username:
