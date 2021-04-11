@@ -71,9 +71,6 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
             self.email_verification_time = timezone.now() + timedelta(minutes=10)
 
     def verify_email_code(self, code):
-        print(code)
-        print(self.verification_code)
-        print(timezone.now() < self.email_verification_time, timezone.now(), self.email_verification_time, sep="\n")
         if code == self.verification_code and timezone.now() < self.email_verification_time:
             return True
         else:
