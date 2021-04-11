@@ -10,13 +10,14 @@ class MyCustomUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
-        user.verify_email()
+        user.send_email()
         user.save(using=self._db)
         return user
 
     def create_superuser(self, email, password):
         user = self.create_user(email, password)
-        user.is_admin = True
+        user.is_superuser = True
+        user.is_active = True
         user.save(using=self._db)
         return user
 
@@ -29,7 +30,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    verfication_code = models.CharField(max_length=6, null=True, blank=True)
+    verification_code = models.CharField(max_length=6, null=True, blank=True)
     email_verification_time = models.DateTimeField(null=True, blank=True)
     password_change_time = models.DateTimeField(null=True, blank=True)
     #password field is already defined in AbstractBaseUser
@@ -68,7 +69,21 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
             self.verification_code = generate_random_code()
             send_verfication_email(self.email, self.verification_code)
             self.email_verification_time = timezone.now() + timedelta(minutes=10)
-            self.save()
+
+    def verify_email_code(self, code):
+        print(code)
+        print(self.verification_code)
+        print(timezone.now() < self.email_verification_time, timezone.now(), self.email_verification_time, sep="\n")
+        if code == self.verification_code and timezone.now() < self.email_verification_time:
+            return True
+        else:
+            return False
+    
+    def verify_change_pass_code(self, code):
+        if code == self.verification_code and timezone.now() < self.password_change_time:
+            return True
+        else:
+            return False
 
     def save(self, *args, **kwargs):
         if not self.username:

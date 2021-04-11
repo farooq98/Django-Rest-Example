@@ -32,7 +32,7 @@ def send_verfication_email(email, code, purpose="email verification"):
     
     message = f'Your {purpose} code is {code}'
     email_from = settings.EMAIL_HOST_USER
-    validated_emails = email_validation(emails)
+    validated_emails = email_validation(email)
 
     if isinstance(validated_emails, EmailNotValidError) or \
        isinstance(validated_emails, ValueError):
