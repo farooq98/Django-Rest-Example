@@ -22,7 +22,7 @@ class UserCreationForm(forms.ModelForm):
 
     def clean_name(self):
         if self.cleaned_data['name']:
-            if not bool(re.match('^[a-zA-Z]+$', self.cleaned_data['name'])):
+            if not bool(re.match('^[a-zA-Z ]+$', self.cleaned_data['name'])):
                 raise ValidationError("Name must only contain characters A to Z or a-z")
             else:
                 return self.cleaned_data['name']
