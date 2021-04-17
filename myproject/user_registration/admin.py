@@ -4,6 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
+from myproject.custom_admin import custom_admin_site
 from .models import UserModel
 import re
 
@@ -85,7 +86,12 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions')
 
+class UserAdminView(admin.ModelAdmin):
+
+    list_display = ('email', 'is_active', 'is_admin')
+
 
 # Now register the new UserAdmin...
 admin.site.register(UserModel, UserAdmin)
+custom_admin_site.register(UserModel, UserAdminView)
 

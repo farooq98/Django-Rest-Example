@@ -8,10 +8,3 @@ class MyCustomAdmin(admin.AdminSite):
     index_title = "Welcom to custom admin"
 
 custom_admin_site = MyCustomAdmin(name='custom_admin_site')
-custom_admin_site.register(TestModel)
-
-class UserAdminView(admin.ModelAdmin):
-
-    list_display = ('email', 'is_active', 'is_admin')
-
-custom_admin_site.register(UserModel, UserAdminView)
