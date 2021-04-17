@@ -30,7 +30,7 @@ class ActivateUser(APIView):
 
         try:
             user = UserModel.objects.get(email=request.data.get('email'))
-            user.is_active = user.verify_email_code(str(request.data.get('verfication_code')))
+            user.is_active = user.verify_email_code(str(request.data.get('verification_code')))
             
             if user.is_active:
                 user.save()
