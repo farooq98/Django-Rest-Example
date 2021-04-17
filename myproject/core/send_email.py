@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
 from django.conf import settings
+from django.template import loader
 from email_validator import validate_email, EmailNotValidError
 from myapp.models import TestModel
 
@@ -28,17 +29,33 @@ def send_verfication_email(email, code, purpose="email verification"):
     if settings.DEBUG:
         subject = f'{purpose.title()} From localhost'
     else:
-        subject = f'{purpose} From {settings.ALLOWED_HOSTS[0]}'
+        subject = f'{purpose.title()} From {settings.ALLOWED_HOSTS[0]}'
     
-    message = f'Your {purpose} code is {code}'
+    if purpose == "email verification":
+        message = f"We are excited to have you get started. First, you need to confirm your account. Your activation code is {code}"
+    else:
+        message = f"We have received a password reset request for your account. Please, verify the equest using the code {code}"
     email_from = settings.EMAIL_HOST_USER
     validated_emails = email_validation(email)
 
     if isinstance(validated_emails, EmailNotValidError) or \
        isinstance(validated_emails, ValueError):
         raise Exception(str(validated_emails))
-    recipient_list = validated_emails
-    send_mail( subject, message, email_from, recipient_list )
+
+    recipient_list = validated_emails[:1]
+
+    html_message = loader.render_to_string(
+                'user_registration/email_template.html',
+                {
+                    'message': message,
+                    'activation_code':  code
+                }
+            )
+
+    if settings.DEBUG:
+        send_mail( subject, message, email_from, recipient_list )
+    else:
+        send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
 
 def check_email(email):
     try:
