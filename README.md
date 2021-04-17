@@ -23,6 +23,19 @@ Response:
   <li>{ "sent": false, "message": "error message" } </li>
 </ul>
 
+# User Registration 
+
+registration end-point: https://farooqhidayat.pythonanywhere.com/api/register/signup/ api to register a user </br>
+It requires a json payload to be posted </br>
+{ “email”: “you@email.com”, “password”: “yourpassword”}
+
+after that you need to activate your user using the </br>
+verification end-point: https://farooqhidayat.pythonanywhere.com/api/register/verify/ </br>
+it also requires a json payload to be posted </br>
+{ “email”: “email_you_signed_up_with@email.com”, “verification_code”: “code_you received_in_your_email”}
+
+Note: “It has been built such a way that verfication code expires after 10 minutes”
+
 # Note:
 After Cloning the Project <br/>
 Create environment.py file inside the /myproject/myproject/ <br/>
