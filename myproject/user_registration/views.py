@@ -10,6 +10,9 @@ from .models import UserModel
 from .serializers import UserSerializer
 
 class CreateUser(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
     
     def post(self, request):
         user = UserSerializer(data=request.data)
@@ -27,6 +30,9 @@ class CreateUser(APIView):
             }, status=status.HTTP_400_BAD_REQUEST) 
 
 class ActivateUser(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
     
     def post(self, request):
         stat = None
@@ -52,6 +58,9 @@ class ActivateUser(APIView):
         }, status=stat)
 
 class ForgetPassword(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
     
     def post(self, request):
 
@@ -81,15 +90,20 @@ class ForgetPassword(APIView):
         }, status=stat)
 
 class LoginUser(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
     
     def post(self, request):
-        eamil = request.data.get('eamil')
+
+        print(request.data)
+        eamil = request.data.get('email')
         password = request.data.get('password')
 
         user = authenticate(username=eamil, password=password)
 
         if user:
-            login(user)
+            login(request, user)
             return Response({
                 "status": True
             }, status=status.HTTP_201_CREATED)
@@ -99,6 +113,9 @@ class LoginUser(APIView):
             }, status=status.HTTP_400_BAD_REQUEST) 
 
 class LogoutView(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
 
     def post(self, request):
         logout(request)
