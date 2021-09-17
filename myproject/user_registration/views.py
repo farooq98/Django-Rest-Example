@@ -17,6 +17,7 @@ class CreateUser(APIView):
             user.save()
             return Response({
                 "status": True,
+                "otp_code": user.code,
                 "message": "An email with a verfication code has been sent to your email address"
             }, status=status.HTTP_201_CREATED)
         else:
