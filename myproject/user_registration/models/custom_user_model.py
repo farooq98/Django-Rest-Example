@@ -10,7 +10,7 @@ class MyCustomUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
-        user.send_email()
+        # user.send_email()
         user.save(using=self._db)
         return user
 

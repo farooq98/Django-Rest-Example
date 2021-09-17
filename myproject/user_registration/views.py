@@ -5,9 +5,13 @@ from django.contrib.auth import authenticate, login, logout
 from core.authentication import CsrfExemptSessionAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
-
+from base64 import decodebytes
 from .models import UserModel
+import os
+from models.happyspace_models import WorkSpaceModel,UserWorkSpaceRelationTable
 from .serializers import UserSerializer
+
+root_path = os.getcwd()
 
 class CreateUser(APIView):
 
