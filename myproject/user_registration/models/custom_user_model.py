@@ -32,8 +32,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     is_admin = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
     verification_code = models.CharField(max_length=6, null=True, blank=True)
-    email_verification_time = models.DateTimeField(null=True, blank=True)
-    password_change_time = models.DateTimeField(null=True, blank=True)
+    verification_code_timeout = models.DateTimeField(null=True, blank=True)
     #password field is already defined in AbstractBaseUser
 
     objects = MyCustomUserManager()
@@ -52,23 +51,17 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         if self.is_active:
             self.verification_code = generate_random_code()
             send_verfication_email(self.email, self.verification_code, purpose="password reset")
-            self.password_change_time = timezone.now() + timedelta(minutes=10)
+            self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
             self.save()
 
     def send_email(self):
         if not self.is_active:
             self.verification_code = generate_random_code()
             send_verfication_email(self.email, self.verification_code)
-            self.email_verification_time = timezone.now() + timedelta(minutes=10)
+            self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
 
-    def verify_email_code(self, code):
-        if code == self.verification_code and timezone.now() < self.email_verification_time:
-            return True
-        else:
-            return False
-    
-    def verify_change_pass_code(self, code):
-        if code == self.verification_code and timezone.now() < self.password_change_time:
+    def validate_timeout(self, code):
+        if code == self.verification_code and timezone.now() < self.verification_code_timeout:
             return True
         else:
             return False
