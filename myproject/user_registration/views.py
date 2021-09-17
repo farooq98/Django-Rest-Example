@@ -6,21 +6,17 @@ from core.authentication import CsrfExemptSessionAuthentication
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from base64 import decodebytes
-from .models import UserModel
+from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
 import os
-from models.happyspace_models import WorkSpaceModel,UserWorkSpaceRelationTable
 from .serializers import UserSerializer
 
 root_path = os.getcwd()
 
 class CreateUser(APIView):
 
-<<<<<<< HEAD
     authentication_classes = ()
     permission_classes = ()
     
-=======
->>>>>>> b318453c7c05f151797f096d4701beecdebd0e0b
     def post(self, request):
 
         data = request.data
