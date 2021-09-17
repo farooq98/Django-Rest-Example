@@ -85,6 +85,7 @@ class ForgetPassword(APIView):
     
     def post(self, request):
 
+        email = request.data.get('email')
         password = request.data.get('password')
         code = request.data.get('verification_code')
         stat = None
@@ -92,7 +93,7 @@ class ForgetPassword(APIView):
         success = None
 
         try:
-            user = UserModel.objects.get(email=request.user.username)
+            user = UserModel.objects.get(email=email)
             timeout_check = user.validate_timeout(code)
             
             if timeout_check:
