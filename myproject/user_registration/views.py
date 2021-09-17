@@ -89,15 +89,12 @@ class LoginUser(APIView):
 
         if user:
             login(user)
-            user.save()
             return Response({
-                "created": True,
-                "message": "An email with a verfication code has been sent to your email address"
+                "status": True
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({
-                "created": False,
-                "message": user.errors
+                "created": False
             }, status=status.HTTP_400_BAD_REQUEST) 
 
 class LogoutView(APIView):
