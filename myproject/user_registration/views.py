@@ -10,20 +10,35 @@ from .models import UserModel
 from .serializers import UserSerializer
 
 class CreateUser(APIView):
-    
+
     def post(self, request):
+
+        data = request.data
         user = UserSerializer(data=request.data)
+        image_name = root_path + "/workspace_images/" + data['workspace_name'] + ".jpeg"
         if user.is_valid():
-            user.save()
-            return Response({
-                "status": True,
-                "message": "An email with a verfication code has been sent to your email address"
-            }, status=status.HTTP_201_CREATED)
+            with open(image_name, "wb") as fh:
+                fh.write(decodebytes(data['workspace_image']))
+            workspace_created = WorkSpaceModel.objects.create(workspace_name=data['workspace_name'],
+                                                              workspace_image=image_name,
+                                                              user_id=user)
+
+            if workspace_created:
+                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(user_id=user,
+                                                                                    workspace_id=workspace_created,
+                                                                                    type_of_user='admin')
+                if user_workspace_relation:
+                    user.save()
+
+                    return Response({
+                        "created": True,
+                        "message": "Your " + data['workspace_name'] + " WorkSpace is Created."
+                    }, status=status.HTTP_201_CREATED)
         else:
             return Response({
                 "created": False,
                 "message": user.errors
-            }, status=status.HTTP_400_BAD_REQUEST) 
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 class ActivateUser(APIView):
     
