@@ -21,7 +21,7 @@ class CreateUser(APIView):
 
         data = request.data
         user = UserSerializer(data=request.data)
-        image_name = root_path + "/workspace_images/" + data['workspace_name'] + ".jpeg"
+        image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
         if user.is_valid():
             with open(image_name, "wb") as fh:
                 fh.write(decodebytes(data['workspace_image']))
@@ -42,7 +42,7 @@ class CreateUser(APIView):
 
                     return Response({
                         "created": True,
-                        "message": "Your " + data['workspace_name'] + " WorkSpace is Created."
+                        "message": "Your " + data.get('workspace_name') + " WorkSpace is Created."
                     }, status=status.HTTP_201_CREATED)
         else:
             return Response({
