@@ -4,7 +4,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserModel
-        fields = ('email', 'password')
+        fields = ('email', 'password', 'is_workspace_admin')
 
     def validate_email(self, value):
         try:
@@ -17,7 +17,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         passwd = len(value)
         if passwd and passwd < 8:
-            raise ValidationError("Password must be greater than 8 characters")
+            raise serializers.ValidationError("Password must be greater than 8 characters")
         return str(value)
 
     def create(self, validated_data):

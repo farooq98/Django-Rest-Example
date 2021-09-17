@@ -25,14 +25,18 @@ class CreateUser(APIView):
         if user.is_valid():
             with open(image_name, "wb") as fh:
                 fh.write(decodebytes(data['workspace_image']))
-            workspace_created = WorkSpaceModel.objects.create(workspace_name=data['workspace_name'],
-                                                              workspace_image=image_name,
-                                                              user_id=user)
+            workspace_created = WorkSpaceModel.objects.create(
+                workspace_name=data['workspace_name'],
+                workspace_image=image_name,
+                user_id=user
+            )
 
             if workspace_created:
-                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(user_id=user,
-                                                                                    workspace_id=workspace_created,
-                                                                                    type_of_user='admin')
+                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                    user_id=user,
+                    workspace_id=workspace_created,
+                    type_of_user='admin'
+                )
                 if user_workspace_relation:
                     user.save()
 
