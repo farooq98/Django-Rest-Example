@@ -78,6 +78,37 @@ class ActivateUser(APIView):
             "message": message
         }, status=stat)
 
+class RequestForgetPassword(APIView):
+
+    authentication_classes = ()
+    permission_classes = ()
+
+    def post(self, request):
+        email = request.data.get('email')
+        stat = None
+        message = None
+        success = None
+
+        try:
+            user = UserModel.objects.get(email=email)
+            user.change_password()
+
+            success, message, stat = True, "an email with otp code is sent", status.HTTP_200_OK
+        
+        except UserModel.DoesNotExist:
+            success, message, stat = False, "No such user exists", status.HTTP_400_BAD_REQUEST
+        
+        resp = {
+            "status": success,
+            "message": message,
+        }
+
+        if success:
+            resp.update({"otp_code": user.verification_code})
+
+        return Response(resp, status=stat)
+
+
 class ForgetPassword(APIView):
 
     authentication_classes = ()
