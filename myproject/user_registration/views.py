@@ -192,7 +192,7 @@ class LoginUser(APIView):
                 return Response({
                     "status": True,
                     "isActive": user.is_active
-                }, status=status.HTTP_200_CREATED)
+                }, status=status.HTTP_200_OK)
             else:
                 return Response({
                     "status": False,
