@@ -321,59 +321,59 @@ class AddMembersWorkSpace(APIView):
 
         invited_users = []
 
-        # try:
-
-        data = request.data
-
         try:
-            relation_obj = UserWorkSpaceRelationTable.objects.get(
-                workspace__id=int(data.get('workspace_id')),
-                user = request.user, 
-                type_of_user = 'admin'
-            )
-            wpmodel = relation_obj.workspace
-        except WorkSpaceModel.DoesNotExist:
+
+            data = request.data
+
+            try:
+                relation_obj = UserWorkSpaceRelationTable.objects.get(
+                    workspace__id=int(data.get('workspace_id')),
+                    user = request.user, 
+                    type_of_user = 'admin'
+                )
+                wpmodel = relation_obj.workspace
+            except WorkSpaceModel.DoesNotExist:
+                return Response({
+                    "status": False,
+                    "message": "workspace not found",
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            members_email_list = data.get('emails')
+            for email in members_email_list:
+                try:
+                    user = UserModel.objects.get(email=email)
+                except UserModel.DoesNotExist:
+                    password = generate_random_code(n_digits=8)
+                    user = UserModel.objects.create_user(email=email, password=password)
+                user.is_active = True
+                user.save()
+
+                try:
+                    UserWorkSpaceRelationTable.objects.get(user = user, workspace = wpmodel)
+                except UserWorkSpaceRelationTable.DoesNotExist:
+                    user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                        user = user,
+                        workspace = wpmodel,
+                        type_of_user = 'normal'
+                    )
+                    if user_workspace_relation:
+                        if not settings.DEBUG:
+                            send_verification_email(email, password,'user invite', workspace_login_link)
+                        else:
+                            invited_users.append({'email': email, 'password': password})
+
+            resp = {
+                "status": True,
+                "message": "success"
+            }
+
+            if settings.DEBUG:
+                resp.update({"invited_users": invited_users})
+            
+            return Response(resp, status = status.HTTP_201_CREATED)
+        
+        except Exception as e:
             return Response({
                 "status": False,
-                "message": "workspace not found",
-            }, status=status.HTTP_400_BAD_REQUEST)
-        
-        members_email_list = data.get('emails')
-        for email in members_email_list:
-            try:
-                user = UserModel.objects.get(email=email)
-            except UserModel.DoesNotExist:
-                password = generate_random_code(n_digits=8)
-                user = UserModel.objects.create_user(email=email, password=password)
-            user.is_active = True
-            user.save()
-
-            try:
-                UserWorkSpaceRelationTable.objects.get(user = user, workspace = wpmodel)
-            except UserWorkSpaceRelationTable.DoesNotExist:
-                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
-                    user = user,
-                    workspace = wpmodel,
-                    type_of_user = 'normal'
-                )
-                if user_workspace_relation:
-                    if not settings.DEBUG:
-                        send_verification_email(email, password,'user invite', workspace_login_link)
-                    else:
-                        invited_users.append({'email': email, 'password': password})
-
-        resp = {
-            "status": True,
-            "message": "success"
-        }
-
-        if settings.DEBUG:
-            resp.update({"invited_users": invited_users})
-        
-        return Response(resp, status = status.HTTP_201_CREATED)
-        
-        # except Exception as e:
-        #     return Response({
-        #         "status": False,
-        #         "message": str(e)
-        #     }, status = status.HTTP_400_BAD_REQUEST)
+                "message": str(e)
+            }, status = status.HTTP_400_BAD_REQUEST)
