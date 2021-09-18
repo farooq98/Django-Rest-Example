@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Post
+from .models import Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
 
@@ -15,5 +15,5 @@ class CommentSerializer(serializers.ModelSerializer):
     created_by = serializers.ReadOnlyField(source='user.name')
 
     class Meta:
-        model = Post
+        model = Comment
         fields = ['id', 'created_by', 'content', 'created_at']
