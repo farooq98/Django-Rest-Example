@@ -330,6 +330,9 @@ class AddMembersWorkSpace(APIView):
                 # user=request.user, 
                 pk=int(data.get('workspace_id'))
             )
+
+            print("=====================> WPMODEL USER" + str(wpmodel.user))
+            print("=====================> REQEQUEST USER" + str(request.user))
         except WorkSpaceModel.DoesNotExist:
             return Response({
                 "status": False,
