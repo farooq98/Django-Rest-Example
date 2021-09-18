@@ -287,9 +287,7 @@ class AddMembersWorkSpace(PrivateAPI):
         invited_users = []
 
         try:
-
             data = request.data
-
             try:
                 relation_obj = UserWorkSpaceRelationTable.objects.get(
                     workspace__id=int(data.get('workspace_id')),
@@ -345,5 +343,19 @@ class AddMembersWorkSpace(PrivateAPI):
 
 class UpdateUserDetails(PrivateAPI):
 
-    def post(self):
-        pass
+    def post(self, request):
+        
+        name = request.data.get('name')
+        designation = request.data.get('name')
+
+        if name:
+            request.user.name = name
+        if designation:
+            request.user.designation = designation
+
+        request.user.save()
+
+        return Response({
+            "status": True,
+            "message": "user info updated",
+        }, status = status.HTTP_200_OK)

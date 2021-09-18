@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import CreateUser, ActivateUser, LoginUser, LogoutView, CheckAuth, ForgetPassword, RequestForgetPassword, \
-    CreateWorkSpace, AddMembersWorkSpace, ResendVerificationCode
+    CreateWorkSpace, AddMembersWorkSpace, ResendVerificationCode, UpdateUserDetails
 
 urlpatterns = [
     path('signup/', CreateUser.as_view()),
@@ -13,4 +13,5 @@ urlpatterns = [
     path('request/forget/password/', RequestForgetPassword.as_view()),
     path('create/workspace/', CreateWorkSpace.as_view()),
     path('add/members/', AddMembersWorkSpace.as_view()),
+    path('update/user/', UpdateUserDetails.as_view()),
 ]
