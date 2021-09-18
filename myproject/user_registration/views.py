@@ -14,7 +14,8 @@ workspace_login_link = ""
 
 class CreateUser(PublicAPI):
 
-    def validate_email(self, value):
+    @classmethod
+    def validate_email(cls, value):
         try:
             UserModel.objects.get(email=value)
         except UserModel.DoesNotExist:
@@ -22,7 +23,8 @@ class CreateUser(PublicAPI):
         else:
             return False
 
-    def validate_password(self, value):
+    @classmethod
+    def validate_password(cls, value):
         passwd = len(value)
         if passwd and passwd < 8:
             return False
@@ -358,3 +360,25 @@ class UpdateUserDetails(PrivateAPI):
             "status": True,
             "message": "user info updated",
         }, status = status.HTTP_200_OK)
+
+class ChangePassword(PrivateAPI):
+
+    def post(self, request):
+
+        password = request.data.get('password')
+
+        if CreateUser.validate_password(password):
+
+            request.user.set_password(str(password))
+            request.user.save()
+
+            return Response({
+                'status': True,
+                'message': 'success'
+            }, status = status.HTTP_200_OK)
+        
+        else:
+            return Response({
+                'status': False,
+                'message': 'password must be grater than 8 characters'
+            }, status = status.HTTP_400_BAD_REQUEST)
