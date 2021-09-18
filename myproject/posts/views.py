@@ -196,7 +196,14 @@ class LinkeView(PrivateAPI):
 
     def post(self, request):
 
-        workspace_obj = validate_user_and_workspace(request)
+        try:
+            workspace_obj = validate_user_and_workspace(request)
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
 
         if isinstance(workspace_obj, Response):
             return workspace_obj
