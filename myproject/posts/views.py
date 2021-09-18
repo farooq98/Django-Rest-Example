@@ -15,7 +15,7 @@ def validate_user_and_workspace(request):
             workspace__id = request.data.get('workspace_id'), 
             user = request.user
         )
-    except WorkSpaceModel.DoesNotExist:
+    except UserWorkSpaceRelationTable.DoesNotExist:
         return Response({
             "status": False,
             "message": "Invalid workspace"
@@ -196,14 +196,7 @@ class LinkeView(PrivateAPI):
 
     def post(self, request):
 
-        try:
-            workspace_obj = validate_user_and_workspace(request)
-        except Exception as e:
-            return Response({
-                "status": False,
-                "message": str(e)
-            }, status=status.HTTP_400_BAD_REQUEST)
-
+        workspace_obj = validate_user_and_workspace(request)
 
         if isinstance(workspace_obj, Response):
             return workspace_obj
