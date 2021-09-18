@@ -24,7 +24,7 @@ class CreateUser(APIView):
         if user.is_valid():
             return Response({
                 "created": True,
-                "message": "Your " + data.get('workspace_name') + " WorkSpace is Created."
+                "message": "User Created"
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({

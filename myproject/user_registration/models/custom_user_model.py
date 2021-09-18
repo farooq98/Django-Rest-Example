@@ -34,6 +34,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     verification_code = models.CharField(max_length=6, null=True, blank=True)
     verification_code_timeout = models.DateTimeField(null=True, blank=True)
     is_workspace_admin = models.BooleanField(default=False)
+    designation = models.CharField(max_length=50)
     #password field is already defined in AbstractBaseUser
 
     objects = MyCustomUserManager()
@@ -63,6 +64,8 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
 
     def validate_timeout(self, code):
         if code == self.verification_code and timezone.now() < self.verification_code_timeout:
+            self.verification_code_timeout = timezone.now()
+            self.save()
             return True
         else:
             return False
