@@ -54,12 +54,13 @@ class CreateUser(APIView):
 
         user = UserModel.objects.create_user(
             email=data.get("email"), 
-            password=data.get("password"),
-            designation=data.get("designation"),
-            name=data.get("name"),
+            password=data.get("password")
         )    
 
         if user:
+            user.designation = data.get("designation")
+            user.name = data.get("name")
+            user.save()
             return Response({
                 "created": True,
                 "message": "User Created",
