@@ -326,13 +326,12 @@ class AddMembersWorkSpace(APIView):
         data = request.data
 
         try:
-            wpmodel = WorkSpaceModel.objects.get(
-                # user=request.user, 
-                pk=int(data.get('workspace_id'))
+            relation_obj = UserWorkSpaceRelationTable.objects.get(
+                workspace__id=int(data.get('workspace_id')),
+                user = request.user, 
+                type_of_user = 'admin'
             )
-
-            print("=====================> WPMODEL USER" + str(wpmodel.user))
-            print("=====================> REQEQUEST USER" + str(request.user))
+            wpmodel = relation_obj.workspace
         except WorkSpaceModel.DoesNotExist:
             return Response({
                 "status": False,
