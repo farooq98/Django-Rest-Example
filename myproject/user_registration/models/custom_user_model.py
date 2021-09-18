@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from datetime import timedelta
-from core import generate_random_code, send_verfication_email
+from core import generate_random_code, send_verification_email
 
 class MyCustomUserManager(BaseUserManager):
     def create_user(self, email, password):
@@ -21,6 +21,15 @@ class MyCustomUserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
+
+    def get_or_create(self,email,password):
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExists:
+            user = self.create_user(email,password)
+        return user
+
 
 class UserModel(AbstractBaseUser, PermissionsMixin):
 
@@ -52,14 +61,14 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     def change_password(self):
         if self.is_active:
             self.verification_code = generate_random_code()
-            send_verfication_email(self.email, self.verification_code, purpose="password reset")
+            send_verification_email(self.email, self.verification_code, purpose="password reset")
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
             self.save()
 
     def send_email(self):
         if not self.is_active:
             self.verification_code = generate_random_code()
-            send_verfication_email(self.email, self.verification_code)
+            send_verification_email(self.email, self.verification_code)
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
 
     def validate_timeout(self, code):
