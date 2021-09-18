@@ -12,6 +12,9 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     edited_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.user.username
+
 
 class Comment(models.Model):
 
@@ -19,4 +22,7 @@ class Comment(models.Model):
     user = models.ForeignKey(UserModel, on_delete = models.CASCADE)
     content = models.TextField(blank = True, null = True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
 

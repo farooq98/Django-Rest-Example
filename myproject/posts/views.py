@@ -1,5 +1,7 @@
-from core.authentication import PublicAPI, PrivateAPI
+from rest_framework.pagination import PageNumberPagination
+from core.authentication import PrivateAPI, PrivateListAPI
 from rest_framework.response import Response
+from .serializers import PostSerializer, CommentSerializer
 from rest_framework import status
 
 from .models import Post, Comment
@@ -129,7 +131,7 @@ class CommentView(PrivateAPI):
             if request.data.get('content'):
                 commnet_obj.content = request.data.get('content')
                 commnet_obj.save()
-                
+
         except Comment.DoesNotExist:
             return Response({
                 "status": False,
@@ -158,6 +160,36 @@ class CommentView(PrivateAPI):
             "status": True,
             "message": "comment updated"
         }, status=status.HTTP_200_OK)
-        
 
+class CustomPagination(PageNumberPagination):
+    pagination_class = PageNumberPagination
+    page_size = 3
+    page_size_query_param = 'page_size'
+    max_page_size = 25
+        
+class AllPosts(PrivateListAPI):
+    
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+    pagination_class = CustomPagination
+
+    def get(self, request, *args, **kwargs):
+
+        workspace_id = request.GET.get('workspace_id')
+        self.queryset = self.queryset.filter(workspace__id=workspace_id)
+
+        return super.get(request, *args, **kwargs)
+
+class AllComments(PrivateListAPI):
+    
+    serializer_class = CommentSerializer
+    queryset = Comment.objects.all()
+    pagination_class = CustomPagination
+
+    def get(self, request, *args, **kwargs):
+
+        post_id = request.GET.get('post_id')
+        self.queryset = self.queryset.filter(post__id=post_id)
+
+        return super.get(request, *args, **kwargs)
 
