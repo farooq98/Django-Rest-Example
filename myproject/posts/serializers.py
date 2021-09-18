@@ -5,6 +5,7 @@ class PostSerializer(serializers.ModelSerializer):
 
     created_by = serializers.ReadOnlyField(source='user.name')
     email = serializers.ReadOnlyField(source='user.username')
+    likes = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = Post
