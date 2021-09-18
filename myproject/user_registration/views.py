@@ -312,10 +312,20 @@ class AddMembersWorkSpace(APIView):
 
     def post(self,request):
 
-        data = []
+        invited_users = []
 
         try:
+
             data = request.data
+
+            try:
+                wpmodel = WorkSpaceModel.objects.get(int(data.get('workspace_id')), user=request.user)
+            except WorkSpaceModel.DoesNotExist:
+                return Response({
+                    "status": False,
+                    "message": "workspace not found",
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
             members_email_list = data.get('emails')
             for email in members_email_list:
                 try:
@@ -327,16 +337,15 @@ class AddMembersWorkSpace(APIView):
                 user.save()
 
                 if user:
-                    user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                    user_workspace_relation = UserWorkSpaceRelationTable.objects.get_or_create(
                         user = user,
-                        workspace = WorkSpaceModel.objects.get(int(data.get('workspace_id'))),
-                        type_of_user='normal'
+                        workspace = wpmodel
                     )
                     if user_workspace_relation:
                         if settings.DEBUG:
                             send_verification_email(email, password,'user invite', workspace_login_link)
                         else:
-                            data.append({'email': email, 'password': password})
+                            invited_users.append({'email': email, 'password': password})
 
             resp = {
                 "status": True,
@@ -344,7 +353,7 @@ class AddMembersWorkSpace(APIView):
             }
 
             if settings.DEBUG:
-                resp.update({"data": data})
+                resp.update({"invited_users": invited_users})
             
             return Response(resp, status = status.HTTP_201_CREATED)
         

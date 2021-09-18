@@ -22,7 +22,12 @@ class UserWorkSpaceRelationTable(models.Model):
 
     user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
     workspace = models.ForeignKey(WorkSpaceModel,on_delete=models.CASCADE)
-    type_of_user = models.CharField(max_length=10,choices=user_choices)
+    type_of_user = models.CharField(max_length=10,choices=user_choices, null=True)
 
     def __str__(self):
         return self.workspace.workspace_name
+
+    def __save__(self, *args, **kwargs):
+        if not self.type_of_user:
+            self.type_of_user = 'normal'
+        super().save(*args, **kwargs)
