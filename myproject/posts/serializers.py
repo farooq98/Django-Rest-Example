@@ -35,6 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
             'content',
             'created_at', 
             'edited_at',
+            'workspace',
             'created_by', 
             'email',
             'liked_by', 
