@@ -256,6 +256,9 @@ class LoginUser(APIView):
     
 class ResendVerificationCode(APIView):
 
+    authentication_classes = ()
+    permission_classes = ()
+
     def post(self, request):
 
         email = request.data.get('email')
