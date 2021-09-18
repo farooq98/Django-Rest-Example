@@ -22,4 +22,5 @@ urlpatterns = [
     path('custom-admin/', custom_admin_site.urls),
     path('api/', include("posts.urls")),
     path('api/register/', include("user_registration.urls")),
+    path('api/core/', include("myapp.urls")),
 ]
