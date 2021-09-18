@@ -236,10 +236,16 @@ class LoginUser(APIView):
 
                 try:
                     user_workspaces = UserWorkSpaceRelationTable.objects.filter(user=user)
-                    user_workspaces = [user_workspace.__dict__ for user_workspace in user_workspaces]
+                    user_workspaces = [
+                        {
+                            "type_of_user": user_workspace.type_of_user,
+                            "workspace_name": user_workspace.workspace.workspace_name,
+                            "workspace_image": user_workspace.workspace.workspace_image,
+
+                        } for user_workspace in user_workspaces]
                     resp.update({"user_workspaces":user_workspaces})
                 except UserWorkSpaceRelationTable.DoesNotExist:
-                    resp.update({"user_workspaces":[]})
+                    resp.update({"user_workspaces": []})
                 return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({
