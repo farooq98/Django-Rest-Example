@@ -326,7 +326,10 @@ class AddMembersWorkSpace(APIView):
         data = request.data
 
         try:
-            wpmodel = WorkSpaceModel.objects.get(pk=int(data.get('workspace_id')))
+            wpmodel = WorkSpaceModel.objects.get(
+                # user=request.user, 
+                pk=int(data.get('workspace_id'))
+            )
         except WorkSpaceModel.DoesNotExist:
             return Response({
                 "status": False,
@@ -343,15 +346,19 @@ class AddMembersWorkSpace(APIView):
             user.is_active = True
             user.save()
 
-            user_workspace_relation = UserWorkSpaceRelationTable.objects.get_or_create(
-                user = user,
-                workspace = wpmodel
-            )
-            if user_workspace_relation:
-                if settings.DEBUG:
-                    send_verification_email(email, password,'user invite', workspace_login_link)
-                else:
-                    invited_users.append({'email': email, 'password': password})
+            try:
+                UserWorkSpaceRelationTable.objects.get(user = user, workspace = wpmodel)
+            except UserWorkSpaceRelationTable.DoesNotExist:
+                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                    user = user,
+                    workspace = wpmodel,
+                    type_of_user = 'normal'
+                )
+                if user_workspace_relation:
+                    if settings.DEBUG:
+                        send_verification_email(email, password,'user invite', workspace_login_link)
+                    else:
+                        invited_users.append({'email': email, 'password': password})
 
         resp = {
             "status": True,
