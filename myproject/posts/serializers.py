@@ -1,17 +1,7 @@
 from rest_framework import serializers
 from .models import Post, Comment
 
-class PostSerializer(serializers.ModelSerializer):
 
-    created_by = serializers.ReadOnlyField(source='user.name')
-    email = serializers.ReadOnlyField(source='user.username')
-    likes = serializers.StringRelatedField(many=True)
-
-    class Meta:
-        model = Post
-        # fields = ['id', 'created_by', 'image_url', 'content', 'likes', 'created_at', 'edited_at', 'email']
-        fields = '__all__'
-        depth = 1
 
 class CommentSerializer(serializers.ModelSerializer):
 
@@ -21,3 +11,15 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'created_by', 'content', 'created_at', 'email']
+    
+class PostSerializer(serializers.ModelSerializer):
+    
+    created_by = serializers.ReadOnlyField(source='user.name')
+    email = serializers.ReadOnlyField(source='user.username')
+    likes = CommentSerializer(many=True)
+    # comments = serializers.StringRelatedField(many=True)
+
+    class Meta:
+        model = Post
+        fields = ['id', 'created_by', 'image_url', 'content', 'likes', 'created_at', 'edited_at', 'email']
+        fields = '__all__'
