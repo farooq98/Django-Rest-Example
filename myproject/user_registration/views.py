@@ -185,7 +185,8 @@ class LoginUser(APIView):
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({
-                "status": False
+                "status": False,
+                "isActive": user.is_active
             }, status=status.HTTP_400_BAD_REQUEST) 
 
 class LogoutView(APIView):
