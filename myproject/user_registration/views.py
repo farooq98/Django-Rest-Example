@@ -86,9 +86,9 @@ class ActivateUser(APIView):
         try:
             user = UserModel.objects.get(email=request.data.get('email'))
             user.is_active = user.validate_timeout(str(request.data.get('verification_code')))
-            
             if user.is_active:
                 user.save()
+                login(request,user)
                 success, message, stat = True, "email has been verified", status.HTTP_200_OK
             else:
                 success, message, stat = False, "verification code has expired", status.HTTP_400_BAD_REQUEST
