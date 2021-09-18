@@ -343,16 +343,15 @@ class AddMembersWorkSpace(APIView):
             user.is_active = True
             user.save()
 
-            if user:
-                user_workspace_relation = UserWorkSpaceRelationTable.objects.get_or_create(
-                    user = user,
-                    workspace = wpmodel
-                )
-                if user_workspace_relation:
-                    if settings.DEBUG:
-                        send_verification_email(email, password,'user invite', workspace_login_link)
-                    else:
-                        invited_users.append({'email': email, 'password': password})
+            user_workspace_relation = UserWorkSpaceRelationTable.objects.get_or_create(
+                user = user,
+                workspace = wpmodel
+            )
+            if user_workspace_relation:
+                if settings.DEBUG:
+                    send_verification_email(email, password,'user invite', workspace_login_link)
+                else:
+                    invited_users.append({'email': email, 'password': password})
 
         resp = {
             "status": True,
