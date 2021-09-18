@@ -7,7 +7,7 @@ class CommentInline(admin.StackedInline):
     model = Comment
 
 class PostAdmin(admin.ModelAdmin):
-    inlines = (CommentInline, Like)
+    inlines = (CommentInline, )
 
 # admin.site.register(Post)
 admin.site.register(Comment)
