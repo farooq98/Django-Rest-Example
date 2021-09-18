@@ -64,7 +64,7 @@ class CreateUser(APIView):
             return Response({
                 "created": True,
                 "message": "User Created",
-                "verification_code": user.code,
+                "verification_code": user.verification_code,
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({
