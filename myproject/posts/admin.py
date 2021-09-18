@@ -5,8 +5,10 @@ from .models import Post, Comment
 
 class CommentInline(admin.StackedInline):
     model = Comment
-    can_delete = False
+
+class PostAdmin(admin.ModelAdmin):
+    inlines = (CommentInline,)
 
 admin.site.register(Post)
 admin.site.register(Comment)
-admin.site.register(Comment, CommentInline)
+admin.site.register(Post, PostAdmin)
