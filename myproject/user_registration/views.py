@@ -320,11 +320,12 @@ class AddMembersWorkSpace(PrivateAPI):
                         workspace = wpmodel,
                         type_of_user = 'normal'
                     )
+                    workspace_login_link = f"HappySpace://activate/{email}/{password}/" 
                     if user_workspace_relation:
                         if not settings.DEBUG:
                             send_verification_email(email, password,'user invite', workspace_login_link)
                         else:
-                            invited_users.append({'email': email, 'password': password})
+                            invited_users.append({'email': email, 'password': password, 'link': workspace_login_link})
 
             resp = {
                 "status": True,
