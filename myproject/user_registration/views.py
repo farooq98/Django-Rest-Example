@@ -187,12 +187,16 @@ class LoginUser(APIView):
             auth_user = user.check_password(password)
 
             if auth_user:
-                if user.is_active:
-                    login(request, user)
-                return Response({
+                resp = {
                     "status": True,
                     "isActive": user.is_active
-                }, status=status.HTTP_200_OK)
+                }
+                if user.is_active:
+                    login(request, user)
+                else:
+                    user.send_email()
+                    resp.update({"activation_code": user.code})
+                return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({
                     "status": False,
