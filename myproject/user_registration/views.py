@@ -1,25 +1,19 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import authenticate, login, logout
-from core.authentication import CsrfExemptSessionAuthentication
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import login, logout
+from core.authentication import PublicAPI, PrivateAPI
 from base64 import decodebytes
 from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
 import os
 from core import generate_random_code,send_verification_email
-from .serializers import UserSerializer
 from django.conf import settings
 
 root_path = os.getcwd()
 
 workspace_login_link = ""
 
-class CreateUser(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
+class CreateUser(PublicAPI):
 
     def validate_email(self, value):
         try:
@@ -73,10 +67,7 @@ class CreateUser(APIView):
                 "message": "something went wrong"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-class CreateWorkSpace(APIView):
-
-    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, )
+class CreateWorkSpace(PrivateAPI):
 
     def post(self, request):
 
@@ -108,15 +99,10 @@ class CreateWorkSpace(APIView):
                 }, status = status.HTTP_201_CREATED)
         return Response({
             "status": False,
-        }, status = status.HTTP_400_BAD_REQUEST)
+        }, status = status.HTTP_400_BAD_REQUEST)       
 
-            
+class ActivateUser(PublicAPI):
 
-class ActivateUser(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
-    
     def post(self, request):
         stat = None
         message = None
@@ -145,10 +131,7 @@ class ActivateUser(APIView):
 
         return Response(resp, status=stat)
 
-class RequestForgetPassword(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
+class RequestForgetPassword(PublicAPI):
 
     def post(self, request):
         email = request.data.get('email')
@@ -176,10 +159,7 @@ class RequestForgetPassword(APIView):
         return Response(resp, status=stat)
 
 
-class ForgetPassword(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
+class ForgetPassword(PublicAPI):
     
     def post(self, request):
 
@@ -209,11 +189,8 @@ class ForgetPassword(APIView):
             "message": message
         }, status=stat)
 
-class LoginUser(APIView):
+class LoginUser(PublicAPI):
 
-    authentication_classes = ()
-    permission_classes = ()
-    
     def post(self, request):
 
         print(request.data)
@@ -261,10 +238,7 @@ class LoginUser(APIView):
                     "isActive": user.is_active
                 }, status=status.HTTP_400_BAD_REQUEST)
     
-class ResendVerificationCode(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
+class ResendVerificationCode(PublicAPI):
 
     def post(self, request):
 
@@ -294,28 +268,19 @@ class ResendVerificationCode(APIView):
                 'message': "so such user with email exists"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-class LogoutView(APIView):
-
-    authentication_classes = ()
-    permission_classes = ()
+class LogoutView(PublicAPI):
 
     def post(self, request):
         logout(request)
         return Response({'success':True, 'message': "Logout successfull."}, status=status.HTTP_200_OK)
 
-class CheckAuth(APIView):
-
-    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, )
+class CheckAuth(PrivateAPI):
 
     def get(self, request):
 
         return Response({'status': True, 'email': request.user.username}, status=status.HTTP_200_OK)
 
-class AddMembersWorkSpace(APIView):
-
-    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, )
+class AddMembersWorkSpace(PrivateAPI):
 
     def post(self,request):
 
@@ -377,3 +342,8 @@ class AddMembersWorkSpace(APIView):
                 "status": False,
                 "message": str(e)
             }, status = status.HTTP_400_BAD_REQUEST)
+
+class UpdateUserDetails(PrivateAPI):
+
+    def post(self):
+        pass
