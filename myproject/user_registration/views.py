@@ -8,9 +8,12 @@ from rest_framework.permissions import IsAuthenticated
 from base64 import decodebytes
 from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
 import os
+from core import generate_random_code,send_verification_email
 from .serializers import UserSerializer
 
 root_path = os.getcwd()
+
+workspace_login_link = ""
 
 class CreateUser(APIView):
 
@@ -202,3 +205,28 @@ class CheckAuth(APIView):
     def get(self, request):
 
         return Response({'status': True, 'email': request.user.username}, status=status.HTTP_200_OK)
+
+class AddMembersWorkSpace(APIView):
+
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+
+    def post(self,request):
+
+        data = request.data
+        members_email_list = data['emails']
+        for email in members_email_list:
+            password = generate_random_code(n_digits=8)
+            user = UserModel.objects.get_or_create(email,password)
+
+            if user:
+                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                    user_id= user,
+                    workspace_id=data.get('workspace_id'),
+                    type_of_user='normal'
+                )
+                if user_workspace_relation:
+                    send_verification_email(email,password,'user invite',workspace_login_link)
+
+        return Response({"status": True
+                            }, status=status.HTTP_201_CREATED)

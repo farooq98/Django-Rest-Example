@@ -25,7 +25,7 @@ def test_email(emails):
     recipient_list = validated_emails
     send_mail( subject, message, email_from, recipient_list )
 
-def send_verfication_email(email, code, purpose="email verification"):
+def send_verfication_email(email, code, purpose="email verification",link=None):
     if settings.DEBUG:
         subject = f'{purpose.title()} From localhost'
     else:
@@ -33,6 +33,9 @@ def send_verfication_email(email, code, purpose="email verification"):
     
     if purpose == "email verification":
         message = f"We are excited to have you get started. First, you need to confirm your account. Your activation code is {code}"
+    elif purpose == 'user invite':
+        message = f"We are excited to have you get started. Here is your login password {code}." \
+                  f" It is important to change your password after login. \n Here is the link to your workspace login {link} \n Thanks."
     else:
         message = f"We have received a password reset request for your account. Please, verify the equest using the code {code}"
     email_from = settings.EMAIL_HOST_USER

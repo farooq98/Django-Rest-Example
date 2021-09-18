@@ -22,6 +22,15 @@ class MyCustomUserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
+
+    def get_or_create(self,email,password):
+        try:
+            user = UserModel.objects.get(email=email)
+        except UserModel.DoesNotExists:
+            user = self.create_user(email,password)
+        return user
+
+
 class UserModel(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
