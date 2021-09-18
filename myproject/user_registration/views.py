@@ -173,18 +173,26 @@ class LoginUser(APIView):
         eamil = request.data.get('email')
         password = request.data.get('password')
 
-        user = authenticate(username=eamil, password=password)
-
-        if user:
-            login(request, user)
-            return Response({
-                "status": True
-            }, status=status.HTTP_201_CREATED)
-        else:
+        try:
+            user = UserModel.objects.get(email=eamil)
+        except UserModel.DoesNotExist:
             return Response({
                 "status": False,
-                "isActive": user.is_active
+                "isActive": False
             }, status=status.HTTP_400_BAD_REQUEST) 
+        else:
+            auth_user = authenticate(username=eamil, password=password)
+
+            if auth_user:
+                login(request, auth_user)
+                return Response({
+                    "status": True
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "status": False,
+                    "isActive": user.is_active
+                }, status=status.HTTP_400_BAD_REQUEST) 
 
 class LogoutView(APIView):
 
