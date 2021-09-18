@@ -1,13 +1,12 @@
-from rest_framework.views import APIView
+from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
+from core import generate_random_code,send_verification_email
+from core.authentication import PublicAPI, PrivateAPI
+from django.contrib.auth import login, logout
 from rest_framework.response import Response
 from rest_framework import status
-from django.contrib.auth import login, logout
-from core.authentication import PublicAPI, PrivateAPI
-from base64 import decodebytes
-from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
-import os
-from core import generate_random_code,send_verification_email
 from django.conf import settings
+from base64 import decodebytes
+import os
 
 root_path = os.getcwd()
 
