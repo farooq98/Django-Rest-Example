@@ -235,7 +235,7 @@ class LoginUser(APIView):
                     resp.update({"activation_code": user.code})
 
                 try:
-                    user_workspaces = UserWorkSpaceRelationTable.objects.get(user_id=user)
+                    user_workspaces = UserWorkSpaceRelationTable.objects.filter(user=user)
                     user_workspaces = [user_workspace.__dict__ for user_workspace in user_workspaces]
                     resp.update({"user_workspaces":user_workspaces})
                 except UserWorkSpaceRelationTable.DoesNotExist:
