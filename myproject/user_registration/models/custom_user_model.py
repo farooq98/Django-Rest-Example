@@ -3,6 +3,7 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, Permis
 from django.utils import timezone
 from datetime import timedelta
 from core import generate_random_code, send_verification_email
+from django.conf import settings
 
 class MyCustomUserManager(BaseUserManager):
     def create_user(self, email, password):
@@ -23,18 +24,10 @@ class MyCustomUserManager(BaseUserManager):
         return user
 
 
-    def get_or_create(self,email,password):
-        try:
-            user = UserModel.objects.get(email=email)
-        except UserModel.DoesNotExists:
-            user = self.create_user(email,password)
-        return user
-
-
 class UserModel(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
-    name = models.CharField(max_length=100, default='Anonymous')
+    name = models.CharField(max_length=100, null=True)
     username = models.CharField(max_length=20, unique=True, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=False)
@@ -61,15 +54,18 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     def change_password(self):
         if self.is_active:
             self.verification_code = generate_random_code()
-            # send_verification_email(self.email, self.verification_code, purpose="password reset")
+            if not settings.DEBUG:
+                send_verification_email(self.email, self.verification_code, purpose="password reset", link=f"HappySpace://forgot/{self.email}/{self.verification_code}/")
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
             self.save()
 
     def send_email(self):
         if not self.is_active:
             self.verification_code = generate_random_code()
-            # send_verification_email(self.email, self.verification_code)
+            if not settings.DEBUG:
+                send_verification_email(self.email, self.verification_code)
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
+            self.save()
 
     def validate_timeout(self, code):
         if code == self.verification_code and timezone.now() < self.verification_code_timeout:

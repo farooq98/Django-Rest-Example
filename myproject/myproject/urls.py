@@ -20,6 +20,6 @@ from .custom_admin import custom_admin_site
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('custom-admin/', custom_admin_site.urls),
-    path('api/', include("myapp.urls")),
+    path('api/', include("posts.urls")),
     path('api/register/', include("user_registration.urls")),
 ]

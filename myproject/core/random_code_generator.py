@@ -1,7 +1,7 @@
 import random
 import math
 
-def generate_random_code(n_digits=6):
+def generate_random_code(n_digits=4):
     digits = [i for i in range(0, 10)]
 
     random_str = ""
