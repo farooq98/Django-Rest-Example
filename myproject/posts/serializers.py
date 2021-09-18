@@ -24,9 +24,19 @@ class PostSerializer(serializers.ModelSerializer):
     
     created_by = serializers.ReadOnlyField(source='user.name')
     email = serializers.ReadOnlyField(source='user.username')
-    commented_by = CommentSerializer(many=True, read_only=True)
-    liked_by = LikeSerializer(many=True, read_only=True)
+    commented_by = CommentSerializer(source='comments', many=True, read_only=True)
+    liked_by = LikeSerializer(source='likes', many=True, read_only=True)
 
     class Meta:
         model = Post
-        fields = ['id', 'created_by', 'image_url', 'content', 'liked_by', 'commented_by', 'created_at', 'edited_at', 'email']
+        fields = [
+            'id', 
+            'image_url', 
+            'content',
+            'created_at', 
+            'edited_at',
+            'created_by', 
+            'email',
+            'liked_by', 
+            'commented_by', 
+        ]
