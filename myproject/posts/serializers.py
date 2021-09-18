@@ -13,7 +13,8 @@ class PostSerializer(serializers.ModelSerializer):
 class CommentSerializer(serializers.ModelSerializer):
 
     created_by = serializers.ReadOnlyField(source='user.name')
+    email = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Comment
-        fields = ['id', 'created_by', 'content', 'created_at']
+        fields = ['id', 'created_by', 'content', 'created_at', 'email']

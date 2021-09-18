@@ -177,7 +177,7 @@ class AllPosts(PrivateListAPI):
         workspace_id = request.GET.get('workspace_id')
         self.queryset = self.queryset.filter(workspace__id=int(workspace_id))
 
-        return super.get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 class AllComments(PrivateListAPI):
     
@@ -190,7 +190,7 @@ class AllComments(PrivateListAPI):
         post_id = request.GET.get('post_id')
         self.queryset = self.queryset.filter(post__id=int(post_id))
 
-        return super.get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
 class LinkeView(PrivateAPI):
 
