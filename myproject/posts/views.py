@@ -97,8 +97,8 @@ class CommentView(PrivateAPI):
 
         try:
             post_obj = Post.objects.get(
-                pk = request.POST.get('post_id'),
-                workspace__id = request.POST.get('workspace_id')
+                pk = request.data.get('post_id'),
+                workspace__id = request.data.get('workspace_id')
             )
         except Post.DoesNotExist:
             return Response({
@@ -125,7 +125,7 @@ class CommentView(PrivateAPI):
 
         try:
             commnet_obj = Comment.objects.get(
-                pk = request.POST.get('comment_id'),
+                pk = request.data.get('comment_id'),
                 user = request.user
             )
             if request.data.get('content'):
@@ -146,7 +146,7 @@ class CommentView(PrivateAPI):
     def delete(self, request):
         try:
             commnet_obj = Comment.objects.get(
-                pk = request.POST.get('comment_id'),
+                pk = request.data.get('comment_id'),
                 user = request.user
             )
             commnet_obj.delete()
