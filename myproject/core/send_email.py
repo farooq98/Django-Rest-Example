@@ -25,7 +25,7 @@ def test_email(emails):
     recipient_list = validated_emails
     send_mail( subject, message, email_from, recipient_list )
 
-def send_verfication_email(email, code, purpose="email verification",link=None):
+def send_verification_email(email, code, purpose="email verification",link=None):
     if settings.DEBUG:
         subject = f'{purpose.title()} From localhost'
     else:

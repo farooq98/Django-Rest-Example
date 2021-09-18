@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from datetime import timedelta
-from core import generate_random_code, send_verfication_email
+from core import generate_random_code, send_verification_email
 
 class MyCustomUserManager(BaseUserManager):
     def create_user(self, email, password):
