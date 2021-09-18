@@ -20,7 +20,9 @@ class Auth:
     permission_classes = (IsAuthenticated, )
 
 class PublicAPI(APIView, NoAuth):
-    pass
+    
+    authentication_classes = ()
+    permission_classes = ()
 
 class PrivateAPI(APIView, Auth):
     pass
@@ -28,5 +30,7 @@ class PrivateAPI(APIView, Auth):
 class PrivateListAPI(ListAPIView, Auth):
     pass
 
-class PublicAPI(ListAPIView, NoAuth):
-    pass
+class ListPublicAPI(ListAPIView, NoAuth):
+    
+    authentication_classes = ()
+    permission_classes = ()
