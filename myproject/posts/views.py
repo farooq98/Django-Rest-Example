@@ -176,7 +176,7 @@ class AllPosts(PrivateListAPI):
     def get(self, request, *args, **kwargs):
 
         workspace_id = request.GET.get('workspace_id')
-        self.queryset = self.queryset.filter(workspace__id=workspace_id)
+        self.queryset = self.queryset.filter(workspace__id=int(workspace_id))
 
         return super.get(request, *args, **kwargs)
 
@@ -189,7 +189,7 @@ class AllComments(PrivateListAPI):
     def get(self, request, *args, **kwargs):
 
         post_id = request.GET.get('post_id')
-        self.queryset = self.queryset.filter(post__id=post_id)
+        self.queryset = self.queryset.filter(post__id=int(post_id))
 
         return super.get(request, *args, **kwargs)
 
