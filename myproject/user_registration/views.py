@@ -135,10 +135,15 @@ class ActivateUser(APIView):
         except UserModel.DoesNotExist:
             success, message, stat = False, "No such user exists", status.HTTP_400_BAD_REQUEST
 
-        return Response({
+        resp = {
             "status": success,
             "message": message
-        }, status=stat)
+        }
+
+        if success:
+            resp.update({"name": user.name, "designation": user.designation})
+
+        return Response(resp, status=stat)
 
 class RequestForgetPassword(APIView):
 
