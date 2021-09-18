@@ -25,10 +25,14 @@ class PublicAPI(APIView, NoAuth):
     permission_classes = ()
 
 class PrivateAPI(APIView, Auth):
-    pass
+    
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
 
 class PrivateListAPI(ListAPIView, Auth):
-    pass
+    
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
 
 class ListPublicAPI(ListAPIView, NoAuth):
     
