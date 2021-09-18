@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import CreateUser, ActivateUser, LoginUser, LogoutView, CheckAuth, ForgetPassword, RequestForgetPassword
+from .views import CreateUser, ActivateUser, LoginUser, LogoutView, CheckAuth, ForgetPassword, RequestForgetPassword, \
+    CreateWorkSpace
 
 urlpatterns = [
     path('signup/', CreateUser.as_view()),
@@ -9,4 +10,5 @@ urlpatterns = [
     path('check/auth/', CheckAuth.as_view()),
     path('forget/password/', ForgetPassword.as_view()),
     path('request/forget/password/', RequestForgetPassword.as_view()),
+    path('create/workspace/', CreateWorkSpace.as_view()),
 ]

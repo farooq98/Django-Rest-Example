@@ -20,35 +20,55 @@ class CreateUser(APIView):
     def post(self, request):
 
         data = request.data
-        user = UserSerializer(data=request.data)
-        image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
+        user = UserSerializer(data = request.data)
         if user.is_valid():
-            with open(image_name, "wb") as fh:
-                fh.write(decodebytes(data['workspace_image']))
-            workspace_created = WorkSpaceModel.objects.create(
-                workspace_name=data['workspace_name'],
-                workspace_image=image_name,
-                user_id=user
-            )
-
-            if workspace_created:
-                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
-                    user_id=user,
-                    workspace_id=workspace_created,
-                    type_of_user='admin'
-                )
-                if user_workspace_relation:
-                    user.save()
-
-                    return Response({
-                        "created": True,
-                        "message": "Your " + data.get('workspace_name') + " WorkSpace is Created."
-                    }, status=status.HTTP_201_CREATED)
+            return Response({
+                "created": True,
+                "message": "Your " + data.get('workspace_name') + " WorkSpace is Created."
+            }, status=status.HTTP_201_CREATED)
         else:
             return Response({
                 "created": False,
                 "message": user.errors
             }, status=status.HTTP_400_BAD_REQUEST)
+
+class CreateWorkSpace(APIView):
+
+    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
+    permission_classes = (IsAuthenticated, )
+
+    def post(self, request):
+
+        data = request.data
+        
+        image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
+
+        with open(image_name, "wb") as fh:
+            fh.write(decodebytes(data.get('workspace_image')))
+        workspace_created = WorkSpaceModel.objects.create(
+            workspace_name = data.get('workspace_name'),
+            workspace_image = image_name,
+            user_id = request.user
+        )
+
+        if workspace_created:
+            user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                user_id = request.user,
+                workspace_id = workspace_created,
+                type_of_user = 'admin'
+            )
+            if user_workspace_relation:
+                request.user.is_workspace_admin = True
+                request.user.save()
+
+                return Response({
+                    "status": True,
+                }, status = status.HTTP_201_CREATED)
+        return Response({
+            "status": False,
+        }, status = status.HTTP_400_BAD_REQUEST)
+
+            
 
 class ActivateUser(APIView):
 
