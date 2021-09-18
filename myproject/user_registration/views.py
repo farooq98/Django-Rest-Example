@@ -155,7 +155,7 @@ class RequestForgetPassword(PublicAPI):
         }
 
         if success and settings.DEBUG:
-            resp.update({"otp_code": user.verification_code})
+            resp.update({"otp_code": user.verification_code, 'link': f"HappySpace://forgot/{email}/{user.verification_code}/"})
 
         return Response(resp, status=stat)
 

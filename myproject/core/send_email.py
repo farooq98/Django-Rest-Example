@@ -37,7 +37,7 @@ def send_verification_email(email, code, purpose="email verification", link=None
         message = f"We are excited to have you get started. Here is your login password {code}." \
                   f" It is important to change your password after login. \n Here is the link to your workspace login {link} \n Thanks."
     else:
-        message = f"We have received a password reset request for your account. Please, verify the equest using the code {code}"
+        message = f"We have received a password reset request for your account. Please, verify the request using the code {code} or got to {link}"
     email_from = settings.EMAIL_HOST_USER
     validated_emails = email_validation(email)
 
