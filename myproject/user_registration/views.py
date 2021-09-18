@@ -345,11 +345,15 @@ class UpdateUserDetails(PrivateAPI):
         
         name = request.data.get('name')
         designation = request.data.get('designation')
+        image_url = request.data.get('image_url')
 
         if name:
             request.user.name = name
         if designation:
             request.user.designation = designation
+        if image_url:
+            request.user.image_url = image_url
+
 
         request.user.save()
 
