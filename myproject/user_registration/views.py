@@ -88,13 +88,13 @@ class CreateWorkSpace(APIView):
         workspace_created = WorkSpaceModel.objects.create(
             workspace_name = data.get('workspace_name'),
             workspace_image = data.get('workspace_image'),
-            user_id = request.user.id
+            user = request.user
         )
 
         if workspace_created:
             user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
-                user_id = request.user,
-                workspace_id = workspace_created.id,
+                user = request.user,
+                workspace = workspace_created,
                 type_of_user = 'admin'
             )
             if user_workspace_relation:

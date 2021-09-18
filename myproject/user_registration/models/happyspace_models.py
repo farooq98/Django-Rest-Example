@@ -17,6 +17,6 @@ class UserWorkSpaceRelationTable(models.Model):
         ('admin', 'Admin User')
     )
 
-    user_id = models.ForeignKey(UserModel,on_delete=models.CASCADE)
-    workspace_id = models.ForeignKey(WorkSpaceModel,on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
+    workspace = models.ForeignKey(WorkSpaceModel,on_delete=models.CASCADE)
     type_of_user = models.CharField(max_length=10,choices=user_choices)
