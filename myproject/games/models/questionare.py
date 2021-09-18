@@ -13,8 +13,8 @@ class Questions(models.Model):
 
 class QuestionsOptions(models.Model):
 
-    option_1 = models.CharField()
-    option_2 = models.CharField()
-    option_3 = models.CharField()
-    option_4 = models.CharField()
+    option_1 = models.CharField(max_length=50)
+    option_2 = models.CharField(max_length=50)
+    option_3 = models.CharField(max_length=50)
+    option_4 = models.CharField(max_length=50)
     question = models.ForeignKey(Questions,on_delete=models.CASCADE)
