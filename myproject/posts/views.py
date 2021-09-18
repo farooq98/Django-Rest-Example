@@ -203,8 +203,8 @@ class LinkeView(PrivateAPI):
 
         try:
             post_obj = Post.objects.get(
-                pk = request.POST.get('post_id'),
-                workspace__id = request.POST.get('workspace_id')
+                pk = request.data.get('post_id'),
+                workspace__id = request.data.get('workspace_id')
             )
         except Post.DoesNotExist:
             return Response({
@@ -212,7 +212,7 @@ class LinkeView(PrivateAPI):
                 "message": "post not found"
             }, status=status.HTTP_400_BAD_REQUEST)
 
-            
+
         try:
             like = Like.objects.create(user=request.user, post=post_obj)
         except Exception as e:
