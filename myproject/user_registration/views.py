@@ -10,6 +10,7 @@ from .models import UserModel, WorkSpaceModel, UserWorkSpaceRelationTable
 import os
 from core import generate_random_code,send_verification_email
 from .serializers import UserSerializer
+from django.conf import settings
 
 root_path = os.getcwd()
 
@@ -80,11 +81,12 @@ class CreateWorkSpace(APIView):
     def post(self, request):
 
         data = request.data
-        
-        # image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
 
-        # with open(image_name, "wb") as fh:
-        #     fh.write(decodebytes(data.get('workspace_image')))
+        if data.get('workspace_name'):
+            image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
+            with open(image_name, "wb") as fh:
+                fh.write(decodebytes(data.get('workspace_image')))
+
         workspace_created = WorkSpaceModel.objects.create(
             workspace_name = data.get('workspace_name'),
             workspace_image = data.get('workspace_image'),
@@ -163,7 +165,7 @@ class RequestForgetPassword(APIView):
             "message": message,
         }
 
-        if success:
+        if success and settings.DEBUG:
             resp.update({"otp_code": user.verification_code})
 
         return Response(resp, status=stat)
@@ -236,13 +238,12 @@ class LoginUser(APIView):
 
                 try:
                     user_workspaces = UserWorkSpaceRelationTable.objects.filter(user=user)
-                    user_workspaces = [
-                        {
-                            "type_of_user": user_workspace.type_of_user,
-                            "workspace_name": user_workspace.workspace.workspace_name,
-                            "workspace_image": user_workspace.workspace.workspace_image,
-
-                        } for user_workspace in user_workspaces]
+                    user_workspaces = [{
+                        "type_of_user": user_workspace.type_of_user,
+                        "workspace_name": user_workspace.workspace.workspace_name,
+                        "workspace_image": user_workspace.workspace.workspace_image,
+                        "workspace_id": user_workspace.workspace.id,
+                    } for user_workspace in user_workspaces]
                     resp.update({"user_workspaces":user_workspaces})
                 except UserWorkSpaceRelationTable.DoesNotExist:
                     resp.update({"user_workspaces": []})
@@ -251,7 +252,37 @@ class LoginUser(APIView):
                 return Response({
                     "status": False,
                     "isActive": user.is_active
-                }, status=status.HTTP_400_BAD_REQUEST) 
+                }, status=status.HTTP_400_BAD_REQUEST)
+    
+class ResendVerificationCode(APIView):
+
+    def post(self, request):
+
+        email = request.data.get('email')
+        try:
+            user = UserModel.objects.get(email=email)
+            if not user.is_active:
+                user.send_email()
+
+                resp = {
+                    'status': True,
+                    'message': 'verification code sent'
+                }
+                if settings.DEBUG:
+                    resp.update({'verfication_code': user.verification_code})
+
+                return Response(resp, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    'status': False,
+                    'message': 'user already verified'
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+        except UserModel.DoesNotExist:
+            return Response({
+                'status': False,
+                'message': "so such user with email exists"
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 class LogoutView(APIView):
 
@@ -278,20 +309,44 @@ class AddMembersWorkSpace(APIView):
 
     def post(self,request):
 
-        data = request.data
-        members_email_list = data['emails']
-        for email in members_email_list:
-            password = generate_random_code(n_digits=8)
-            user = UserModel.objects.get_or_create(email,password)
+        data = []
 
-            if user:
-                user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
-                    user_id= user,
-                    workspace_id=data.get('workspace_id'),
-                    type_of_user='normal'
-                )
-                if user_workspace_relation:
-                    send_verification_email(email,password,'user invite',workspace_login_link)
+        try:
+            data = request.data
+            members_email_list = data.get('emails')
+            for email in members_email_list:
+                try:
+                    user = UserModel.objects.get(email=email)
+                except UserModel.DoesNotExist:
+                    password = generate_random_code(n_digits=8)
+                    user = UserModel.objects.create_user(email=email, password=password)
+                user.is_active = True
+                user.save()
 
-        return Response({"status": True
-                            }, status=status.HTTP_201_CREATED)
+                if user:
+                    user_workspace_relation = UserWorkSpaceRelationTable.objects.create(
+                        user = user,
+                        workspace = WorkSpaceModel.objects.get(int(data.get('workspace_id'))),
+                        type_of_user='normal'
+                    )
+                    if user_workspace_relation:
+                        if settings.DEBUG:
+                            send_verification_email(email, password,'user invite', workspace_login_link)
+                        else:
+                            data.append({'email': email, 'password': password})
+
+            resp = {
+                "status": True,
+                "message": "success"
+            }
+
+            if settings.DEBUG:
+                resp.update({"data": data})
+            
+            return Response(resp, status = status.HTTP_201_CREATED)
+        
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": str(e)
+            }, status = status.HTTP_400_BAD_REQUEST)

@@ -23,14 +23,6 @@ class MyCustomUserManager(BaseUserManager):
         return user
 
 
-    def get_or_create(self,email,password):
-        try:
-            user = UserModel.objects.get(email=email)
-        except UserModel.DoesNotExists:
-            user = self.create_user(email,password)
-        return user
-
-
 class UserModel(AbstractBaseUser, PermissionsMixin):
 
     email = models.EmailField(max_length=255, unique=True)
@@ -70,6 +62,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
             self.verification_code = generate_random_code()
             # send_verification_email(self.email, self.verification_code)
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
+            self.save()
 
     def validate_timeout(self, code):
         if code == self.verification_code and timezone.now() < self.verification_code_timeout:

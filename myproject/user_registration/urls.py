@@ -11,5 +11,5 @@ urlpatterns = [
     path('forget/password/', ForgetPassword.as_view()),
     path('request/forget/password/', RequestForgetPassword.as_view()),
     path('create/workspace/', CreateWorkSpace.as_view()),
-    path('addmembers/', AddMembersWorkSpace.as_view()),
+    path('add/members/', AddMembersWorkSpace.as_view()),
 ]
