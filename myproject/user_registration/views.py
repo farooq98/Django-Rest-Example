@@ -97,6 +97,8 @@ class CreateWorkSpace(PrivateAPI):
 
                 return Response({
                     "status": True,
+                    "workspace_id": workspace_created.id,
+                    "workspace_name": workspace_created.name,
                 }, status = status.HTTP_201_CREATED)
         return Response({
             "status": False,
