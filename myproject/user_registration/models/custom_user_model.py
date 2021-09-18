@@ -10,7 +10,7 @@ class MyCustomUserManager(BaseUserManager):
             raise ValueError('Users must have an email address')
         user = self.model(email=self.normalize_email(email))
         user.set_password(password)
-        # user.send_email()
+        user.send_email()
         user.save(using=self._db)
         return user
 
@@ -61,14 +61,14 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     def change_password(self):
         if self.is_active:
             self.verification_code = generate_random_code()
-            send_verification_email(self.email, self.verification_code, purpose="password reset")
+            # send_verification_email(self.email, self.verification_code, purpose="password reset")
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
             self.save()
 
     def send_email(self):
         if not self.is_active:
             self.verification_code = generate_random_code()
-            send_verification_email(self.email, self.verification_code)
+            # send_verification_email(self.email, self.verification_code)
             self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
 
     def validate_timeout(self, code):

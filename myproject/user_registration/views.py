@@ -19,20 +19,56 @@ class CreateUser(APIView):
 
     authentication_classes = ()
     permission_classes = ()
+
+    def validate_email(self, value):
+        try:
+            UserModel.objects.get(email=value)
+        except UserModel.DoesNotExist:
+            return True
+        else:
+            return False
+
+    def validate_password(self, value):
+        passwd = len(value)
+        if passwd and passwd < 8:
+            return False
+        return True
     
     def post(self, request):
 
         data = request.data
-        user = UserSerializer(data = request.data)
-        if user.is_valid():
+        email = data.get("email") if self.validate_email(data.get("email")) else False
+        password = data.get("password") if self.validate_password(data.get("password")) else False
+
+        if not email or not password:
+            if not email:
+                message = "Email is already taken"
+            elif not password:
+                message = "Password must be greater than 8 characters"
+
+            return Response({
+                "created": False,
+                "message": message,
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        user = UserModel.objects.create_user(
+            email=data.get("email"), 
+            password=data.get("password"),
+            designation=data.get("designation"),
+            name=data.get("name"),
+        )    
+
+        if user:
             return Response({
                 "created": True,
-                "message": "User Created"
+                "message": "User Created",
+                "verification_code": user.code,
             }, status=status.HTTP_201_CREATED)
         else:
             return Response({
                 "created": False,
-                "message": user.errors
+                "message": "something went wrong"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateWorkSpace(APIView):
