@@ -162,7 +162,6 @@ class CommentView(PrivateAPI):
         }, status=status.HTTP_200_OK)
 
 class CustomPagination(PageNumberPagination):
-    pagination_class = PageNumberPagination
     page_size = 3
     page_size_query_param = 'page_size'
     max_page_size = 25
@@ -184,7 +183,7 @@ class AllComments(PrivateListAPI):
     
     serializer_class = CommentSerializer
     queryset = Comment.objects.all()
-    pagination_class = CustomPagination
+    # pagination_class = CustomPagination
 
     def get(self, request, *args, **kwargs):
 
@@ -192,4 +191,32 @@ class AllComments(PrivateListAPI):
         self.queryset = self.queryset.filter(post__id=int(post_id))
 
         return super.get(request, *args, **kwargs)
+
+class LinkeView(PrivateAPI):
+
+    def post(self, request):
+
+        workspace_obj = validate_user_and_workspace(request)
+
+        if isinstance(workspace_obj, Response):
+            return workspace_obj
+
+        try:
+            post_obj = Post.objects.get(
+                pk = request.POST.get('post_id'),
+                workspace__id = request.POST.get('workspace_id')
+            )
+            post_obj.like = post_obj.like + 1
+            post_obj.save()
+        except Post.DoesNotExist:
+            return Response({
+                "status": False,
+                "message": "post not found"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "status": True,
+            "message": "post liked"
+        }, status=status.HTTP_200_OK)
+
 
