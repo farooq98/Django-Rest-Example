@@ -73,12 +73,6 @@ class CreateWorkSpace(PrivateAPI):
     def post(self, request):
 
         data = request.data
-
-        # if data.get('workspace_name'):
-        #     image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
-        #     with open(image_name, "wb") as fh:
-        #         fh.write(decodebytes(data.get('workspace_image')))
-
         workspace_created = WorkSpaceModel.objects.create(
             workspace_name = data.get('workspace_name'),
             workspace_image = data.get('workspace_image'),
