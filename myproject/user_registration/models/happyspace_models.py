@@ -7,7 +7,7 @@ class WorkSpaceModel(models.Model):
 
     user = models.ForeignKey(UserModel,on_delete=models.CASCADE)
     workspace_name = models.CharField(max_length=50)
-    workspace_image = models.ImageField(null=True, blank=True)
+    workspace_image = models.CharField(max_length=100, null=True, blank=True)
 
 
 class UserWorkSpaceRelationTable(models.Model):
