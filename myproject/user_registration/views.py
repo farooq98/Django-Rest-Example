@@ -184,13 +184,15 @@ class LoginUser(APIView):
                 "isActive": False
             }, status=status.HTTP_400_BAD_REQUEST) 
         else:
-            auth_user = authenticate(username=eamil, password=password)
+            auth_user = user.check_password(password)
 
             if auth_user:
-                login(request, auth_user)
+                if user.is_active:
+                    login(request, user)
                 return Response({
-                    "status": True
-                }, status=status.HTTP_201_CREATED)
+                    "status": True,
+                    "isActive": user.is_active
+                }, status=status.HTTP_200_CREATED)
             else:
                 return Response({
                     "status": False,
