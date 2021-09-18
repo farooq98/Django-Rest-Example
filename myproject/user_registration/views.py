@@ -234,9 +234,12 @@ class LoginUser(APIView):
                     user.send_email()
                     resp.update({"activation_code": user.code})
 
-                user_workspaces = UserWorkSpaceRelationTable.objects.get(user_id=user)
-                user_workspaces = [user_workspace.__dict__ for user_workspace in user_workspaces]
-                resp.update({"user_workspaces":user_workspaces})
+                try:
+                    user_workspaces = UserWorkSpaceRelationTable.objects.get(user_id=user)
+                    user_workspaces = [user_workspace.__dict__ for user_workspace in user_workspaces]
+                    resp.update({"user_workspaces":user_workspaces})
+                except UserWorkSpaceRelationTable.DoesNotExist:
+                    resp.update({"user_workspaces":[]})
                 return Response(resp, status=status.HTTP_200_OK)
             else:
                 return Response({
