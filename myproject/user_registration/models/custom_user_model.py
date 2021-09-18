@@ -34,7 +34,7 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
     verification_code = models.CharField(max_length=6, null=True, blank=True)
     verification_code_timeout = models.DateTimeField(null=True, blank=True)
     is_workspace_admin = models.BooleanField(default=False)
-    designation = models.CharField(max_length=50)
+    designation = models.CharField(max_length=50, null=True, blank=True)
     #password field is already defined in AbstractBaseUser
 
     objects = MyCustomUserManager()
