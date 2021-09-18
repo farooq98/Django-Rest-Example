@@ -348,7 +348,7 @@ class UpdateUserDetails(PrivateAPI):
     def post(self, request):
         
         name = request.data.get('name')
-        designation = request.data.get('name')
+        designation = request.data.get('designation')
 
         if name:
             request.user.name = name
