@@ -27,6 +27,8 @@ class Comment(models.Model):
         return self.content
 
 class Like(models.Model):
+    class Meta:
+        unique_together = (('post', 'user'),)
     
     post = models.ForeignKey(Post, on_delete = models.CASCADE, related_name="likes")
     user = models.ForeignKey(UserModel, on_delete = models.CASCADE)
