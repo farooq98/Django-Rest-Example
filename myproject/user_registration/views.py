@@ -81,13 +81,13 @@ class CreateWorkSpace(APIView):
 
         data = request.data
         
-        image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
+        # image_name = root_path + "/workspace_images/" + data.get('workspace_name') + ".jpeg"
 
-        with open(image_name, "wb") as fh:
-            fh.write(decodebytes(data.get('workspace_image')))
+        # with open(image_name, "wb") as fh:
+        #     fh.write(decodebytes(data.get('workspace_image')))
         workspace_created = WorkSpaceModel.objects.create(
             workspace_name = data.get('workspace_name'),
-            workspace_image = image_name,
+            workspace_image = data.get('workspace_image'),
             user_id = request.user
         )
 
