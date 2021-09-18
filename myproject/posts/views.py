@@ -188,7 +188,6 @@ class AllComments(PrivateListAPI):
     def get(self, request, *args, **kwargs):
 
         post_id = request.GET.get('post_id')
-        if
         self.queryset = self.queryset.filter(post__id=post_id)
 
         return super().get(request, *args, **kwargs)
