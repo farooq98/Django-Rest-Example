@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import status
 
-from .models import Post, Comment
+from .models import Post, Comment, Like
 from user_registration.models import WorkSpaceModel, UserWorkSpaceRelationTable
 
 # Create your views here.
@@ -206,17 +206,25 @@ class LinkeView(PrivateAPI):
                 pk = request.POST.get('post_id'),
                 workspace__id = request.POST.get('workspace_id')
             )
-            post_obj.like = post_obj.like + 1
-            post_obj.save()
         except Post.DoesNotExist:
             return Response({
                 "status": False,
                 "message": "post not found"
             }, status=status.HTTP_400_BAD_REQUEST)
 
+            
+        try:
+            like = Like.objects.create(user=request.user, post=post_obj)
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": "Already liked"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
         return Response({
             "status": True,
-            "message": "post liked"
+            "message": "post liked",
+            "liked_by": like.user.username
         }, status=status.HTTP_200_OK)
 
 
