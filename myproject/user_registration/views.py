@@ -355,7 +355,7 @@ class AddMembersWorkSpace(APIView):
                     type_of_user = 'normal'
                 )
                 if user_workspace_relation:
-                    if settings.DEBUG:
+                    if not settings.DEBUG:
                         send_verification_email(email, password,'user invite', workspace_login_link)
                     else:
                         invited_users.append({'email': email, 'password': password})
