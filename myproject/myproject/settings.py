@@ -10,11 +10,25 @@ except ImportError:
     TIME_ZONE = "UTC"
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST_USER = "admin@myproject.com"
+    STORAGE_LINK = "your storage link"
+    APP_ID = "your app id"
+    FIREBASE_CONFIG = {
+        "apiKey": "your api key",
+        "authDomain": "your auth domain",
+        "projectId": "your project id",
+        "databaseURL":"your database url",
+        "storageBucket": "your storage bucket",
+        "messagingSenderId": "your messaging sender id",
+        "appId": "your app id"
+    }
 else:
     DEBUG = True if environment.ENV == "DEV" else False
     SECRET_KEY = environment.SECRET_KEY
     ALLOWED_HOSTS = environment.ALLOWED_HOSTS
     TIME_ZONE = environment.TIME_ZONE
+    STORAGE_LINK = environment.STORAGE_LINK
+    APP_ID = environment.APP_ID
+    FIREBASE_CONFIG = environment.FIREBASE_CONFIG
     if DEBUG:
         EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
         EMAIL_HOST_USER = "admin@myproject.com"

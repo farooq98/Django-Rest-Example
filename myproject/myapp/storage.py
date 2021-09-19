@@ -1,21 +1,13 @@
 import pyrebase
 import random
 import string
+from django.conf import settings
 import os
 from base64 import b64decode
 
-storage_link = "gs://happyspace-f4b71.appspot.com"
-app_id = "1:990034038970:android:218ad60be730640553f283"
-firebaseConfig = {
-  "apiKey": "AIzaSyAUFd9-GB2WtkbH1l6KCh5NPbyqU2l7ros",
-  "authDomain": "happyspace-f4b71.firebaseapp.com",
-  "projectId": "happyspace-f4b71",
-  "databaseURL":"https://happyspace-f4b71-default-rtdb.firebaseio.com",
-  "storageBucket": "happyspace-f4b71.appspot.com",
-  "messagingSenderId": "990034038970",
-  "appId":"1:990034038970:web:e2ec4a7fdb5036c453f283"
-}
-
+storage_link = settings.STORAGE_LINK
+app_id = settings.APP_ID
+firebaseConfig = settings.FIREBASE_CONFIG
 # Initialize Firebase
 firebase = pyrebase.initialize_app(firebaseConfig)
 auth = firebase.auth()
