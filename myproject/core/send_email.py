@@ -38,7 +38,7 @@ def send_verification_email(email, code, purpose="email verification", link=None
         message = f"We are excited to have you get started. Here is your login password {code}." \
                   f" It is important to change your password after login. \n Here is the link to your workspace login is given below.\n"
     else:
-        subject = 'Password Reset'
+        # subject = 'Password Reset'
         forget = True
         message = f"We have received a password reset request for your account. Please, verify the request using the code {code}"
     email_from = settings.EMAIL_HOST_USER
@@ -63,10 +63,7 @@ def send_verification_email(email, code, purpose="email verification", link=None
     if settings.DEBUG:
         send_mail( subject, message, email_from, recipient_list )
     else:
-        if link:
-            send_mail( subject, message + '\n' + link, email_from, recipient_list, fail_silently=True, html_message=html_message )
-        else:
-            send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
+        send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
 def check_email(email):
     try:
         valid = validate_email(email)
