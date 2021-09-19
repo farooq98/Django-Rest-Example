@@ -22,7 +22,7 @@ except ImportError:
         "appId": "your app id"
     }
 else:
-    DEBUG = True if environment.ENV == "DEV" else False
+    DEBUG = True if environment.ENV in ["DEV", "STAGE"] else False
     SECRET_KEY = environment.SECRET_KEY
     ALLOWED_HOSTS = environment.ALLOWED_HOSTS
     TIME_ZONE = environment.TIME_ZONE
