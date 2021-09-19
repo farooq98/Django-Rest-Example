@@ -113,7 +113,7 @@ class QuizAnswerAPIView(PrivateAPI):
                 "question_id": question.question.id, 
                 "question": question.question.question, 
                 "correct_answer_id": question.correct_answer.id,
-                "already_answered": True if question.answers.filter(played_by=request.user) else False,
+                "already_answered": True if question.question.answers.filter(played_by=request.user) else False,
             }
             
             options_object = []
