@@ -63,10 +63,7 @@ def send_verification_email(email, code, purpose="email verification", link=None
     if settings.DEBUG:
         send_mail( subject, message, email_from, recipient_list )
     else:
-        if link:
-            send_mail( subject, message + '\n' + link, email_from, recipient_list, fail_silently=True, html_message=html_message )
-        else:
-            send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
+        send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
 def check_email(email):
     try:
         valid = validate_email(email)
