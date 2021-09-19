@@ -8,6 +8,7 @@ from .models import UserQuestions
 from rest_framework.response import Response
 from core.authentication import PublicAPI, PrivateAPI
 from rest_framework import status
+from user_registration.models import UserModel
 from .models import Questions,QuestionsOptions,UserQuestions
 
 class GetAllUsersWithQuiz(PrivateAPI):
@@ -84,3 +85,59 @@ class QuestionView(PrivateAPI):
                 "status": True,
                 "message": e.__str__
             }, status=status.HTTP_400_BAD_REQUEST)
+
+
+class QuizAnswer(PrivateAPI):
+
+    def post(self,request):
+
+        data = request.data
+        correct_answer = False
+        try:
+            Question = Questions.objects.get(id=data.get('question_id'))
+        except :
+            return Response({
+                "status": False,
+                "message": "Question Not Found!",
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            Option = QuestionsOptions.objects.get(id= data.get('option_id'),question=Question)
+        except :
+            return Response({
+                "status": False,
+                "message": "Option Not Found For The Provided Question!",
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user_questions = UserQuestions.objects.get(question=Question,user=request.user)
+            if user_questions:
+                if user_questions.option.id == Option.id:
+                    correct_answer = True
+        except Exception as e:
+            return Response({
+                "status": True,
+                "message": e.__str__
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+        try:
+            user = UserModel.objects.get(email=data.get('answered_for'))
+        except Exception as e:
+            return Response({
+                "status": True,
+                "message": e.__str__
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        answer_created = QuizAnswer.objects.create(answered_for=user,played_by=request.user,
+                                  question=Question,option=Option,correct_answer=correct_answer)
+        if answer_created:
+            return Response({
+                "status": True,
+                "message": "Quiz Answered Successfully",
+            }, status=status.HTTP_201_CREATED)
+
+        return Response({
+            "status": False,
+            "message": "Quiz Not Answered Successfully!",
+        }, status=status.HTTP_400_BAD_REQUEST)
