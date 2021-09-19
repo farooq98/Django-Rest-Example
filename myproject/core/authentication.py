@@ -9,32 +9,22 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
     def enforce_csrf(self, request):
         return
 
-class NoAuth:
+class PublicAPI(APIView):
     
     authentication_classes = ()
     permission_classes = ()
 
-class Auth:
+class PrivateAPI(APIView):
     
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, )
 
-class PublicAPI(APIView, NoAuth):
-    
-    authentication_classes = ()
-    permission_classes = ()
-
-class PrivateAPI(APIView, Auth):
+class PrivateListAPI(ListAPIView):
     
     authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
     permission_classes = (IsAuthenticated, )
 
-class PrivateListAPI(ListAPIView, Auth):
-    
-    authentication_classes = (CsrfExemptSessionAuthentication, SessionAuthentication)
-    permission_classes = (IsAuthenticated, )
-
-class ListPublicAPI(ListAPIView, NoAuth):
+class ListPublicAPI(ListAPIView):
     
     authentication_classes = ()
     permission_classes = ()
