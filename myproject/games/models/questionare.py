@@ -19,6 +19,6 @@ class UserQuestions(models.Model):
     class Meta:
         unique_together = (('question', 'correct_answer', 'user'),)
 
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='user_queestions')
-    correct_answer = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE, related_name='correct_answer')
-    user = models.ForeignKey(UserModel, on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    correct_answer = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
+    user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
