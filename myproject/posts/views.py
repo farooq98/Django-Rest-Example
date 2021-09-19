@@ -254,4 +254,15 @@ class LinkeView(PrivateAPI):
             "message": "Like Removed"
         }, status=status.HTTP_200_OK)
 
+class GetPost(AllPosts):
+
+    pagination_class = None
+
+    def get(self, request, *args, **kwargs):
+
+        workspace_id = request.GET.get('workspace_id')
+        post_id = request.GET.get('post_id')
+        self.queryset = self.queryset.filter(pk=post_id, workspace__id=workspace_id)
+
+        return super().get(request, *args, **kwargs)
 
