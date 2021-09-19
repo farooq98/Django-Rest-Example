@@ -12,7 +12,7 @@ class Questions(models.Model):
 class QuestionsOptions(models.Model):
 
     option_text = models.CharField(max_length=50)
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='options')
 
 class UserQuestions(models.Model):
 
