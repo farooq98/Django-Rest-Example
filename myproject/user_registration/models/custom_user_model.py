@@ -53,12 +53,11 @@ class UserModel(AbstractBaseUser, PermissionsMixin):
         return self.is_admin
 
     def change_password(self):
-        if self.is_active:
-            self.verification_code = generate_random_code()
-            if not settings.DEBUG:
-                send_verification_email(self.email, self.verification_code, purpose="password reset", link=f"HappySpace://forgot/{self.email}/{self.verification_code}/")
-            self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
-            self.save()
+        self.verification_code = generate_random_code()
+        if not settings.DEBUG:
+            send_verification_email(self.email, self.verification_code, purpose="password reset", link=f"HappySpace://forgot/{self.email}/{self.verification_code}/")
+        self.verification_code_timeout = timezone.now() + timedelta(minutes=10)
+        self.save()
 
     def send_email(self):
         if not self.is_active:
