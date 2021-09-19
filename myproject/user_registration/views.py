@@ -314,7 +314,7 @@ class AddMembersWorkSpace(PrivateAPI):
                     user = UserModel.objects.get(email=email)
                 except UserModel.DoesNotExist:
                     password = generate_random_code(n_digits=8)
-                    user = UserModel.objects.create_user(email=email, password=password)
+                    user = UserModel.objects.create_user(email=email, password=password , name=email.split("@")[0])
                     created_members.append(user)
                 user.is_active = True
                 user.save()
