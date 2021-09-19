@@ -101,7 +101,7 @@ class QuestionView(PrivateAPI):
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
-class QuizAnswer(PrivateAPI):
+class QuizAnswerAPIView(PrivateAPI):
 
     def get(self, request):
         All_Question = UserQuestions.objects.filter(user__email=request.GET.get('email'))
