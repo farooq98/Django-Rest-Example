@@ -203,7 +203,9 @@ class LeaderBoard(PrivateAPI):
         for quiz_answer_object in quiz_answers_object:
             if quiz_answer_object.played_by.email not in leader_board_object.keys():
                 leader_board_object[quiz_answer_object.played_by.email] = {"question_attempted_count": 1,
-                                                                            "question_attempted_correct_count": 1 if quiz_answer_object.correct_answer else 0,
+                                                                           "question_attempted_correct_count": 1 if quiz_answer_object.correct_answer else 0,
+                                                                           "name":quiz_answer_object.answered_for.name,
+                                                                           "image_url":quiz_answer_object.answered_for.image_url,
                                                                              }
             else:
                 leader_board_object[quiz_answer_object.played_by.email]["question_attempted_count"] += 1
