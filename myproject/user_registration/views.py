@@ -210,6 +210,7 @@ class LoginUser(PublicAPI):
                     "isActive": user.is_active,
                     "name": user.name,
                     "designation": user.designation,
+                    "image_url": user.image_url,
                 }
                 if user.is_active:
                     login(request, user)
