@@ -29,7 +29,7 @@ def send_verification_email(email, code, purpose="email verification", link=None
     if settings.DEBUG:
         subject = f'{purpose.title()} From localhost'
     else:
-        subject = f'{purpose.title()} From {settings.ALLOWED_HOSTS[0]}'
+        subject = "Welcome to HappySpace"
     
     if purpose == "email verification":
         message = f"We are excited to have you get started. First, you need to confirm your account. Your activation code is {code}"
