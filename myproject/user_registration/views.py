@@ -297,6 +297,9 @@ class AddMembersWorkSpace(PrivateAPI):
                     "status": False,
                     "message": "workspace not found",
                 }, status=status.HTTP_400_BAD_REQUEST)
+
+
+            created_members = []
             
             members_email_list = data.get('emails')
             for email in members_email_list:
@@ -305,6 +308,7 @@ class AddMembersWorkSpace(PrivateAPI):
                 except UserModel.DoesNotExist:
                     password = generate_random_code(n_digits=8)
                     user = UserModel.objects.create_user(email=email, password=password)
+                    created_members.append(user)
                 user.is_active = True
                 user.save()
 
@@ -317,7 +321,7 @@ class AddMembersWorkSpace(PrivateAPI):
                         type_of_user = 'normal'
                     )
                     workspace_login_link = f"HappySpace://activate/{email}/{password}/" 
-                    if user_workspace_relation:
+                    if user_workspace_relation and user_workspace_relation.user in created_members:
                         if not settings.DEBUG:
                             send_verification_email(email, password,'user invite', workspace_login_link)
                         else:
