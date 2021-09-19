@@ -57,11 +57,15 @@ class CreateUser(PublicAPI):
             user.designation = data.get("designation")
             user.name = data.get("name")
             user.save()
-            return Response({
+
+            resp = {
                 "created": True,
-                "message": "User Created",
-                "verification_code": user.verification_code,
-            }, status=status.HTTP_201_CREATED)
+                "message": "User Created"
+            }
+            if settings.DEBUG:
+                resp.update({"verification_code": user.verification_code})
+
+            return Response(resp, status=status.HTTP_201_CREATED)
         else:
             return Response({
                 "created": False,
