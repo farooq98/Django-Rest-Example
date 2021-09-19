@@ -88,7 +88,7 @@ class QuestionView(PrivateAPI):
             }, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            created = UserQuestions.objects.created(question=Question,correct_answer=Option,user=request.user)
+            created = UserQuestions.objects.create(question=Question,correct_answer=Option,user=request.user)
             if created:
                 return Response({
                     "status": True,
