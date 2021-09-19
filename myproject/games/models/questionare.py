@@ -26,11 +26,11 @@ class UserQuestions(models.Model):
 class QuizAnswer(models.Model):
 
     class Meta:
-        unique_together = (('played_by', 'answered_for', 'question', 'options'),)
+        unique_together = (('played_by', 'answered_for', 'question', 'option'),)
 
-    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE, related_name='answers')
     option = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
-    played_by = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="player")
-    answered_for = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="answer")
+    played_by = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="played_player")
+    answered_for = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="answered_player")
     correct_answer = models.BooleanField(default = False)
 
