@@ -157,7 +157,7 @@ class QuizAnswerAPIView(PrivateAPI):
         try:
             user_questions = UserQuestions.objects.get(question=Question,user=request.user)
             if user_questions:
-                if user_questions.option.id == Option.id:
+                if user_questions.correct_answer == Option:
                     correct_answer = True
         except Exception as e:
             return Response({
@@ -179,7 +179,8 @@ class QuizAnswerAPIView(PrivateAPI):
             played_by = request.user,
             question = Question,
             option = Option,
-            correct_answer = correct_answer)
+            correct_answer = correct_answer
+        )
         
         if answer_created:
             return Response({
