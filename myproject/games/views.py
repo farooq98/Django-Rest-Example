@@ -40,17 +40,31 @@ class GetAllUsersWithQuiz(PrivateAPI):
 class QuestionView(PrivateAPI):
 
     def get(self, request):
+        
         All_Question = Questions.objects.all()
         array_object = []
+        
         for question in All_Question:
-            data_object = {"question_id":question.id,"question":question.question}
+            data_object = {
+                "question_id" : question.id,
+                "question" : question.question
+            }
             options_object = []
             for option in question.options.all():
-                obj = {"option_id":option.id,"option_text":option.option_text}
+                obj = {
+                    "option_id" : option.id,
+                    "option_text" : option.option_text
+                }
                 options_object.append(obj)
+            
             data_object.update({"options":options_object})
             array_object.append(data_object)
-        return Response({'status': True, 'email': request.user.username , 'questionare': array_object}, status=status.HTTP_200_OK)
+        
+        return Response({
+            'status': True, 
+            'email': request.user.username , 
+            'questionare': array_object
+        }, status=status.HTTP_200_OK)
 
 
     def post(self,request):
@@ -159,8 +173,13 @@ class QuizAnswer(PrivateAPI):
                 "message": e.__str__
             }, status=status.HTTP_400_BAD_REQUEST)
 
-        answer_created = QuizAnswer.objects.create(answered_for=user,played_by=request.user,
-                                  question=Question,option=Option,correct_answer=correct_answer)
+        answer_created = QuizAnswer.objects.create(
+            answered_for = user,
+            played_by = request.user,
+            question = Question,
+            option = Option,
+            correct_answer = correct_answer)
+        
         if answer_created:
             return Response({
                 "status": True,
