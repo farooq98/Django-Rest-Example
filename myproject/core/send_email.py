@@ -35,9 +35,9 @@ def send_verification_email(email, code, purpose="email verification", link=None
         message = f"We are excited to have you get started. First, you need to confirm your account. Your activation code is {code}"
     elif purpose == 'user invite':
         message = f"We are excited to have you get started. Here is your login password {code}." \
-                  f" It is important to change your password after login. \n Here is the link to your workspace login {link} \n Thanks."
+                  f" It is important to change your password after login. \n Here is the link to your workspace login is given below.\n"
     else:
-        message = f"We have received a password reset request for your account. Please, verify the request using the code {code} or got to {link}"
+        message = f"We have received a password reset request for your account. Please, verify the request using the code {code}"
     email_from = settings.EMAIL_HOST_USER
     validated_emails = email_validation(email)
 
@@ -51,7 +51,8 @@ def send_verification_email(email, code, purpose="email verification", link=None
                 'user_registration/email_template.html',
                 {
                     'message': message,
-                    'activation_code':  code
+                    'activation_code':  code,
+                    'link': link
                 }
             )
 
