@@ -29,7 +29,8 @@ class QuizAnswer(models.Model):
         unique_together = (('played_by', 'answered_for'),)
 
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
-    correct_answer = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
-    played_by = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
-    answered_for = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
+    option = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
+    played_by = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="player")
+    answered_for = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name="answer")
+    correct_answer = models.BooleanField(default = False)
 
