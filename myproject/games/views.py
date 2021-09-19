@@ -30,8 +30,10 @@ class GetAllUsersWithQuiz(PrivateAPI):
         )]
 
         return Response([{
-            'user_id': usr.id,
-            'email': usr.email
+            'user_id': usr.user.id,
+            'name':usr.user.name,
+            'image_url':usr.user.image_url,
+            'email': usr.user.email
         } for usr in UserQuestions.objects.filter(user__in=workspace_users)], status=status.HTTP_200_OK)
 
 class QuestionView(PrivateAPI):
