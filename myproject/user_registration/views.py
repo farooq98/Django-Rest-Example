@@ -148,6 +148,8 @@ class RequestForgetPassword(PublicAPI):
         
         except UserModel.DoesNotExist:
             success, message, stat = False, "No such user exists", status.HTTP_400_BAD_REQUEST
+
+        link = f"HappySpace://forgot/{email}/{user.verification_code}/"
         
         resp = {
             "status": success,
@@ -155,7 +157,7 @@ class RequestForgetPassword(PublicAPI):
         }
 
         if success and settings.DEBUG:
-            resp.update({"otp_code": user.verification_code, 'link': f"HappySpace://forgot/{email}/{user.verification_code}/"})
+            resp.update({"otp_code": user.verification_code, 'link': link})
 
         return Response(resp, status=stat)
 
