@@ -1,5 +1,4 @@
 from django.urls import path
-<<<<<<< Updated upstream
 from .views import GetAllUsersWithQuiz,QuestionView
 
 urlpatterns = [
