@@ -191,3 +191,35 @@ class QuizAnswerAPIView(PrivateAPI):
             "status": False,
             "message": "Quiz Not Answered Successfully!",
         }, status=status.HTTP_400_BAD_REQUEST)
+
+class LeaderBoard(PrivateAPI):
+
+    def get(self,request):
+
+        quiz_answers_object = QuizAnswer.objects.filter(answered_for=request.user)
+        leader_board_array = []
+        leader_board_object = {}
+        for quiz_answer_object in quiz_answers_object:
+            if quiz_answer_object.played_by.email not in leader_board_object.keys():
+                leader_board_object[quiz_answer_object.played_by.email] = {"question_attempted_count": 1,
+                                                                            "question_attempted_correct_count": 1 if quiz_answer_object.correct_answer else 0,
+                                                                             }
+            else:
+                leader_board_object[quiz_answer_object.played_by.email]["question_attempted_count"] += 1
+                leader_board_object[quiz_answer_object.played_by.email]["question_attempted_correct_count"] += 1 if quiz_answer_object.correct_answer else 0
+
+            leader_board_array.append(leader_board_object)
+        for leader_board_data in leader_board_array:
+            leader_board_value = list(leader_board_data.values())[0]
+            leader_board_value['success_percentage'] = leader_board_value['question_attempted_correct_count']/leader_board_value['question_attempted_count'] * 100
+
+        if len(leader_board_array) > 0:
+            return Response({
+                "status": True,
+                "message": leader_board_array,
+            }, status=status.HTTP_200_OK)
+
+        return Response({
+            "status": False,
+            "message": "No Answers Found!",
+        }, status=status.HTTP_400_BAD_REQUEST)
