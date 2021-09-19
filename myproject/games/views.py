@@ -9,11 +9,14 @@ from rest_framework.response import Response
 from core.authentication import PublicAPI, PrivateAPI
 from rest_framework import status
 from user_registration.models import UserModel
-from .models import Questions,QuestionsOptions,UserQuestions
+from .models import Questions, QuestionsOptions, UserQuestions, QuizAnswer
 
 class GetAllUsersWithQuiz(PrivateAPI):
     
     def get(self, request):
+
+        already_played = QuizAnswer.objects.filter(played_by=request.user)
+        emails = {obj.answered_for.email: None for obj in already_played}       
 
         try:
             UserWorkSpaceRelationTable.objects.get(
@@ -34,7 +37,8 @@ class GetAllUsersWithQuiz(PrivateAPI):
             'user_id': usr.user.id,
             'name':usr.user.name,
             'image_url':usr.user.image_url,
-            'email': usr.user.email
+            'email': usr.user.email,
+            'already_played': emails.get(usr.user.email, False)
         } for usr in UserQuestions.objects.filter(user__in=workspace_users)], status=status.HTTP_200_OK)
 
 class QuestionView(PrivateAPI):
