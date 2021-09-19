@@ -13,10 +13,7 @@ from .models import Questions, QuestionsOptions, UserQuestions, QuizAnswer
 
 class GetAllUsersWithQuiz(PrivateAPI):
     
-    def get(self, request):
-
-        already_played = QuizAnswer.objects.filter(played_by=request.user)
-        emails = {obj.answered_for.email: None for obj in already_played}       
+    def get(self, request):      
 
         try:
             UserWorkSpaceRelationTable.objects.get(
@@ -37,8 +34,7 @@ class GetAllUsersWithQuiz(PrivateAPI):
             'user_id': usr.user.id,
             'name':usr.user.name,
             'image_url':usr.user.image_url,
-            'email': usr.user.email,
-            'already_played': emails.get(usr.user.email, False)
+            'email': usr.user.email
         } for usr in UserQuestions.objects.filter(user__in=workspace_users)], status=status.HTTP_200_OK)
 
 class QuestionView(PrivateAPI):
@@ -116,7 +112,8 @@ class QuizAnswer(PrivateAPI):
             data_object = {
                 "question_id": question.question.id, 
                 "question": question.question.question, 
-                "correct_answer_id": question.correct_answer.id
+                "correct_answer_id": question.correct_answer.id,
+                "already_answered": True if question.player.filter(played_by=request.user) else False,
             }
             
             options_object = []

@@ -26,7 +26,7 @@ class UserQuestions(models.Model):
 class QuizAnswer(models.Model):
 
     class Meta:
-        unique_together = (('played_by', 'answered_for'),)
+        unique_together = (('played_by', 'answered_for', 'question', 'options'),)
 
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     option = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
