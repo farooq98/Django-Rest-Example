@@ -26,18 +26,20 @@ def test_email(emails):
     send_mail( subject, message, email_from, recipient_list )
 
 def send_verification_email(email, code, purpose="email verification", link=None):
+    forget = False
     if settings.DEBUG:
         subject = f'{purpose.title()} From localhost'
     else:
-        subject = f'{purpose.title()} From {settings.ALLOWED_HOSTS[0]}'
+        subject = "Welcome to HappySpace"
     
     if purpose == "email verification":
         message = f"We are excited to have you get started. First, you need to confirm your account. Your activation code is {code}"
     elif purpose == 'user invite':
         message = f"We are excited to have you get started. Here is your login password {code}." \
-                  f" It is important to change your password after login. \n Here is the link to your workspace login {link} \n Thanks."
+                  f" It is important to change your password after login. \n Here is the link to your workspace login is given below.\n"
     else:
-        message = f"We have received a password reset request for your account. Please, verify the request using the code {code} or got to {link}"
+        forget = True
+        message = f"We have received a password reset request for your account. Please, verify the request using the code {code}"
     email_from = settings.EMAIL_HOST_USER
     validated_emails = email_validation(email)
 
@@ -48,18 +50,22 @@ def send_verification_email(email, code, purpose="email verification", link=None
     recipient_list = validated_emails[:1]
 
     html_message = loader.render_to_string(
-                'user_registration/email_template.html',
-                {
-                    'message': message,
-                    'activation_code':  code
-                }
-            )
+        'user_registration/email_template.html',
+        {
+            'message': message,
+            'activation_code':  code,
+            'link': link,
+            'forget': forget,
+        }
+    )
 
     if settings.DEBUG:
         send_mail( subject, message, email_from, recipient_list )
     else:
-        send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
-
+        if link:
+            send_mail( subject, message + '\n' + link, email_from, recipient_list, fail_silently=True, html_message=html_message )
+        else:
+            send_mail( subject, message, email_from, recipient_list, fail_silently=True, html_message=html_message )
 def check_email(email):
     try:
         valid = validate_email(email)
