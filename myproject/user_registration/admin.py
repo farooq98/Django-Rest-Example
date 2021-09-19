@@ -13,7 +13,7 @@ class UserCreationForm(forms.ModelForm):
 
     class Meta:
         model = UserModel
-        fields = ('name', 'email', 'username', 'date_of_birth')
+        fields = ('name', 'email', 'username', 'date_of_birth', 'image_url')
 
     def clean_password(self):
         passwd = len(self.cleaned_data['password'])
@@ -48,7 +48,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = UserModel
-        fields = ('name', 'email', 'password', 'date_of_birth', 'is_active', 'is_admin', 'groups', 'user_permissions')
+        fields = ('name', 'email', 'password', 'image_url', 'date_of_birth', 'is_active', 'is_admin', 'groups', 'user_permissions')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -70,7 +70,7 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ('groups',)
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
-        ('Personal info', {'fields': ('name', 'date_of_birth',)}),
+        ('Personal info', {'fields': ('name', 'image_url', 'date_of_birth',)}),
         ('Permissions', {'fields': ('is_admin',)}),
         ('Groups', {'fields': ('groups', 'user_permissions')}),
     )
