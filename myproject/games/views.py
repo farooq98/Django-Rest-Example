@@ -97,7 +97,7 @@ class QuestionView(PrivateAPI):
         except Exception as e:
             return Response({
                 "status": True,
-                "message": e.__str__
+                "message": e.__str__()
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
