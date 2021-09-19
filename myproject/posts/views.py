@@ -227,4 +227,31 @@ class LinkeView(PrivateAPI):
             "liked_by": like.user.username
         }, status=status.HTTP_200_OK)
 
+    def delete(self, request):
+
+        try:
+            post_obj = Post.objects.get(
+                pk = request.data.get('post_id')
+            )
+        except Post.DoesNotExist:
+            return Response({
+                "status": False,
+                "message": "post not found"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+        try:
+            like = Like.objects.get(user=request.user, post=post_obj)
+            like.delete()
+        except Like.DoesNotExist:
+            return Response({
+                "status": False,
+                "message": "Not liked"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response({
+            "status": True,
+            "message": "Like Removed"
+        }, status=status.HTTP_200_OK)
+
 
