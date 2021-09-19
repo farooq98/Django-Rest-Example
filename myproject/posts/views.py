@@ -75,7 +75,7 @@ class PostView(PrivateAPI):
             post_obj = Post.objects.get(pk=request.data.get('post_id'), user=request.user)
             post_obj.delete()
 
-        except WorkSpaceModel.DoesNotExist:
+        except Post.DoesNotExist:
             return Response({
                 "status": False,
                 "message": "Invalid post"

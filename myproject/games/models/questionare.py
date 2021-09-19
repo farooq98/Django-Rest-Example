@@ -22,3 +22,14 @@ class UserQuestions(models.Model):
     question = models.ForeignKey(Questions, on_delete=models.CASCADE)
     correct_answer = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
     user = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
+
+class QuizAnswer(models.Model):
+
+    class Meta:
+        unique_together = (('played_by', 'answered_for'),)
+
+    question = models.ForeignKey(Questions, on_delete=models.CASCADE)
+    correct_answer = models.ForeignKey(QuestionsOptions, on_delete=models.CASCADE)
+    played_by = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
+    answered_for = models.ForeignKey(UserModel, on_delete=models.CASCADE, related_name='questions')
+
