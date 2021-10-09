@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 import json
 
-if os.environ.get('HOST') == 'HEROKU':
+if os.environ.get('HOST', '') == 'HEROKU':
     DEBUG = True if os.environ.get("ENV") in ["DEV", "STAGE"] else False
     HOST = os.environ.get("HOST")
     SECRET_KEY = os.environ.get("SECRET_KEY")
@@ -125,16 +125,23 @@ ASGI_APPLICATION = 'myproject.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+PSQL = {
+    'ENGINE': 'django_prometheus.db.backends.postgresql' if PROMETHEUS else 'django.db.backends.postgresql_psycopg2',
+    'NAME': os.environ.get('DB_NAME'),
+    'USER': os.environ.get('DB_USER'),
+    'PASSWORD': os.environ.get('DB_PASSWORD'),
+    'HOST': os.environ.get('DB_HOST'),
+    'PORT': os.environ.get('DB_PORT'),
 }
 
-import dj_database_url
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+SQLITE = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
+}
+
+DATABASES = {
+    'default': PSQL if os.environ.get('HOST', '') == 'HEROKU' else SQLITE
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
