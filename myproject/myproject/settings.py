@@ -5,6 +5,7 @@ try:
     from . import environment
 except ImportError:
     DEBUG = True 
+    HOST = 'LOCALHOST'
     SECRET_KEY = "mysecretkey"
     ALLOWED_HOSTS = []
     TIME_ZONE = "UTC"
@@ -12,6 +13,8 @@ except ImportError:
     EMAIL_HOST_USER = "admin@myproject.com"
     STORAGE_LINK = "your storage link"
     APP_ID = "your app id"
+    IREBASE_PROJECT_EMAIL = "youremail"
+    FIREBASE_PROJECT_PASS = "yourpassword"
     FIREBASE_CONFIG = {
         "apiKey": "your api key",
         "authDomain": "your auth domain",
@@ -23,11 +26,14 @@ except ImportError:
     }
 else:
     DEBUG = True if environment.ENV in ["DEV", "STAGE"] else False
+    HOST = environment.HOST
     SECRET_KEY = environment.SECRET_KEY
     ALLOWED_HOSTS = environment.ALLOWED_HOSTS
     TIME_ZONE = environment.TIME_ZONE
     STORAGE_LINK = environment.STORAGE_LINK
     APP_ID = environment.APP_ID
+    FIREBASE_PROJECT_EMAIL = environment.FIREBASE_PROJECT_EMAIL
+    FIREBASE_PROJECT_PASS = environment.FIREBASE_PROJECT_PASS
     FIREBASE_CONFIG = environment.FIREBASE_CONFIG
     if DEBUG:
         EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -136,7 +142,12 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+if HOST != 'HEROKU':
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 
 AUTH_USER_MODEL = 'user_registration.UserModel'
 

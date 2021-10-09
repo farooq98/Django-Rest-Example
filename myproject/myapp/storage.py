@@ -21,8 +21,8 @@ def generate_image_random_name():
 
 
 def get_image_url(image_name):
-  email = "happyface_user@gmail.com"
-  password = "happyface123"
+  email = settings.FIREBASE_PROJECT_EMAIL
+  password = settings.FIREBASE_PROJECT_PASS
   user = auth.sign_in_with_email_and_password(email, password)
   token = user['idToken']
   image_url = storage.child(image_name).get_url(token)
