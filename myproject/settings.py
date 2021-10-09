@@ -2,7 +2,7 @@ from pathlib import Path
 import os
 import json
 
-if not os.environ.get('HOST') == 'HEROKU':
+if os.environ.get('HOST') == 'HEROKU':
     DEBUG = True if os.environ.get("ENV") in ["DEV", "STAGE"] else False
     HOST = os.environ.get("HOST")
     SECRET_KEY = os.environ.get("SECRET_KEY")
