@@ -7,7 +7,7 @@ except ImportError:
     DEBUG = True 
     HOST = 'LOCALHOST'
     SECRET_KEY = "mysecretkey"
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['*']
     TIME_ZONE = "UTC"
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
     EMAIL_HOST_USER = "admin@myproject.com"
