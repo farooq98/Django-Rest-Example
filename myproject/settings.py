@@ -126,7 +126,7 @@ ASGI_APPLICATION = 'myproject.asgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 PSQL = {
-    'ENGINE': 'django_prometheus.db.backends.postgresql' if PROMETHEUS else 'django.db.backends.postgresql_psycopg2',
+    'ENGINE': 'django.db.backends.postgresql_psycopg2',
     'NAME': os.environ.get('DB_NAME'),
     'USER': os.environ.get('DB_USER'),
     'PASSWORD': os.environ.get('DB_PASSWORD'),
