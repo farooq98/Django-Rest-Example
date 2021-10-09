@@ -289,7 +289,7 @@ class AddMembersWorkSpace(PrivateAPI):
     def post(self,request):
 
         invited_users = []
-
+        password = generate_random_code(n_digits=8)
         try:
             data = request.data
             try:
@@ -313,10 +313,10 @@ class AddMembersWorkSpace(PrivateAPI):
                 try:
                     user = UserModel.objects.get(email=email)
                 except UserModel.DoesNotExist:
-                    password = generate_random_code(n_digits=8)
                     user = UserModel.objects.create_user(email=email, password=password)
                     created_members.append(user)
                 user.is_active = True
+                user.name = email.split("@")[0]
                 user.save()
 
                 try:
@@ -327,7 +327,7 @@ class AddMembersWorkSpace(PrivateAPI):
                         workspace = wpmodel,
                         type_of_user = 'normal'
                     )
-                    workspace_login_link = f"HappySpace://activate/{email}/{password}/" 
+                    workspace_login_link = f"HappySpace://activate/{email}/{password}/"
                     if user_workspace_relation and user_workspace_relation.user in created_members:
                         if not settings.DEBUG:
                             send_verification_email(email, password,'user invite', workspace_login_link)
